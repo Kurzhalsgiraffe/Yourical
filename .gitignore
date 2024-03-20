@@ -1,2 +1,3 @@
 *.ics
+database.db
 __pycache__
