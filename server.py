@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, flash, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -60,6 +60,10 @@ def login():
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user)
                 return redirect(url_for('dashboard'))
+            else:
+                flash('Incorrect password. Please try again.', 'error')
+        else:
+            flash('User does not exist. Please register.', 'error')
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -71,21 +75,24 @@ def logout():
 @ app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-
-    if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('login'))
-
+    existing_user_username = User.query.filter_by(username=form.username.data).first()
+    if existing_user_username:
+        flash('That username already exists. Please choose a different one.', 'error')
+    else:
+        if form.validate_on_submit():
+            hashed_password = bcrypt.generate_password_hash(form.password.data)
+            new_user = User(username=form.username.data, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration successful. You can now log in.', 'success')
+            return redirect(url_for('login'))
+            
     return render_template('register.html', form=form)
 
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
     if __debug__:
-        app.run(debug=True, host="0.0.0.0")
+        app.run(debug=True, host="0.0.0.0", port=8080)
     else:
         serve(app, host="0.0.0.0", port=80)
-        print("test")
