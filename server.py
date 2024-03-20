@@ -2,14 +2,16 @@ from flask import Flask, flash, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
+from flask_bcrypt import Bcrypt
+from talisman import Talisman
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
-from flask_bcrypt import Bcrypt
-from waitress import serve
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+
+talisman = Talisman(app, force_https=True)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -92,7 +94,4 @@ def register():
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    if __debug__:
-        app.run(debug=True, host="0.0.0.0", port=8080)
-    else:
-        serve(app, host="0.0.0.0", port=80)
+    app.run(debug=True, host="0.0.0.0", port=5000, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))

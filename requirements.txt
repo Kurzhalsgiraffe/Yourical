@@ -19,6 +19,7 @@ pycparser>=2.21
 six>=1.16.0
 SQLAlchemy>=1.4.35
 sqlparse>=0.4.2
+talisman>=0.1.0
 Werkzeug>=2.1.1
 WTForms>=3.0.1
 zipp>=3.8.0

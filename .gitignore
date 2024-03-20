@@ -1,3 +1,5 @@
 *.ics
-
+*.crt
+*.pem
+*.key
 __pycache__
