@@ -100,12 +100,16 @@ def get_list():
     return jsonify(untis.get_all_semesters())
 
 @app.route('/process_semester_selection', methods=['POST'])
+@login_required
 def process_semester_selection():
     selected_items = request.form.getlist('selected_items')
 
-    print("Selected Items:")
-    for item_id in selected_items:
-        print(item_id)
+    if current_user.is_authenticated:
+        current_user.semesters = json.dumps(selected_items)
+        db.session.commit()
+    else:
+        print("User is not authenticated")
+
     return ""
 
 ## ----- MAIN ----- ##
