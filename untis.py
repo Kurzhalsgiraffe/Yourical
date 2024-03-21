@@ -25,8 +25,8 @@ def get_untis_session():
 def get_all_semesters() -> list[str]:
     with get_untis_session().login() as session:
         semesters = []
-        for klasse in session.klassen():
-            semesters.append(klasse.name)
+        for index, klasse in enumerate(session.klassen()):
+            semesters.append({"id":index, "name":klasse.name})
         return semesters
     
 def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:datetime) -> set:

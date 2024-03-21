@@ -6,15 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script> 
 </head>
 
 <body>
-    <h1>Hier</h1>
-    <h1>kommt</h1>
-    <h1>der</h1>
-    <h1>Untis</h1>
-    <h1>Shit</h1>
+    <h2>Select Items</h2>
+    <form id="itemForm" action="/process_selection" method="POST">
+        <ul id="itemList">
+            <!-- List items will be dynamically added here -->
+        </ul>
+        <button type="submit">Submit</button>
+    </form>
     <a href="{{url_for('logout')}}">logout</a>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 
 </html>

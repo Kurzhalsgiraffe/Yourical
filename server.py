@@ -1,4 +1,4 @@
-from flask import Flask, flash, render_template, url_for, redirect
+from flask import Flask, flash, jsonify, render_template, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -7,6 +7,7 @@ from talisman import Talisman
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import json
+import untis
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -93,6 +94,10 @@ def register():
             return redirect(url_for('login'))
             
     return render_template('register.html', form=form)
+
+@app.route('/list')
+def get_list():
+    return jsonify(untis.get_all_semesters())
 
 ## ----- MAIN ----- ##
 
