@@ -117,7 +117,7 @@ def process_semester_selection():
 def get_module_list():
     semesters = json.loads(current_user.semesters)
 
-    start_date = datetime(2024, 3, 18)
+    start_date = datetime(2024, 3, 18) # TODO: Auf dem Webinterface auswählen
     end_date = datetime(2024, 7, 6)
     
     all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start=start_date, end=end_date)

@@ -1,0 +1,9 @@
+git clone https://github.com/Kurzhalsgiraffe/Untis_to_ICal
+
+cd Untis_to_ICal
+
+chmod +x ssl.sh
+
+./ssl.sh
+
+pip3 install -r requirements.txt
