@@ -95,23 +95,17 @@ def register():
             
     return render_template('register.html', form=form)
 
-@app.route('/list')
+@app.route('/get_semester_list')
 def get_list():
     return jsonify(untis.get_all_semesters())
 
-@app.route('/process_selection', methods=['POST'])
-def process_selection():
-    # Retrieve the selected items from the form submission
+@app.route('/process_semester_selection', methods=['POST'])
+def process_semester_selection():
     selected_items = request.form.getlist('selected_items')
 
-    # Print the selected items (for demonstration)
     print("Selected Items:")
     for item_id in selected_items:
         print(item_id)
-
-    # You can perform any further processing here, such as saving the selected items to a database, etc.
-
-    # Return a response (optional)
     return ""
 
 ## ----- MAIN ----- ##
