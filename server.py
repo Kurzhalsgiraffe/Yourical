@@ -6,6 +6,7 @@ from flask_bcrypt import Bcrypt
 from talisman import Talisman
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -28,6 +29,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
+    semesters = db.Column(db.JSON)
+    modules = db.Column(db.JSON)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -83,7 +86,7 @@ def register():
     else:
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data)
-            new_user = User(username=form.username.data, password=hashed_password)
+            new_user = User(username=form.username.data, password=hashed_password, semesters=json.dumps({}), modules=json.dumps({}))
             db.session.add(new_user)
             db.session.commit()
             flash('Registration successful. You can now log in.', 'success')
@@ -94,4 +97,5 @@ def register():
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
+    db.create_all()
     app.run(debug=True, host="0.0.0.0", port=443, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))
