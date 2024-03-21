@@ -1,4 +1,4 @@
-from flask import Flask, flash, jsonify, render_template, url_for, redirect
+from flask import Flask, flash, jsonify, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -98,6 +98,21 @@ def register():
 @app.route('/list')
 def get_list():
     return jsonify(untis.get_all_semesters())
+
+@app.route('/process_selection', methods=['POST'])
+def process_selection():
+    # Retrieve the selected items from the form submission
+    selected_items = request.form.getlist('selected_items')
+
+    # Print the selected items (for demonstration)
+    print("Selected Items:")
+    for item_id in selected_items:
+        print(item_id)
+
+    # You can perform any further processing here, such as saving the selected items to a database, etc.
+
+    # Return a response (optional)
+    return ""
 
 ## ----- MAIN ----- ##
 
