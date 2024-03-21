@@ -11,15 +11,23 @@
 </head>
 
 <body>
+    <a href="{{url_for('logout')}}">logout</a>
+
     <h2>Select your Semesters</h2>
     <form id="semesterItemForm">
         <table id="semesterItemTable" class="itemTable">
             <!-- Selection elements will be dynamically added here -->
         </table>
-        <button type="submit" id="submitButton">Submit</button>
+        <button type="submit" id="submitsemesterButton">Submit</button>
     </form>
 
-    <a href="{{url_for('logout')}}">logout</a>
+    <h2>Select your Modules</h2>
+    <form id="moduleItemForm">
+        <table id="moduleItemTable" class="itemTable">
+            <!-- Selection elements will be dynamically added here -->
+        </table>
+        <button type="submit" id="submitmoduleButton">Submit</button>
+    </form>
 
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

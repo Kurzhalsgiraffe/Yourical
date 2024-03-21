@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, flash, jsonify, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -96,7 +97,7 @@ def register():
     return render_template('register.html', form=form)
 
 @app.route('/get_semester_list')
-def get_list():
+def get_semester_list():
     return jsonify(untis.get_all_semesters())
 
 @app.route('/process_semester_selection', methods=['POST'])
@@ -106,6 +107,29 @@ def process_semester_selection():
 
     if current_user.is_authenticated:
         current_user.semesters = json.dumps(selected_items)
+        db.session.commit()
+    else:
+        print("User is not authenticated")
+
+    return ""
+
+@app.route('/get_module_list')
+def get_module_list():
+    semesters = json.loads(current_user.semesters)
+
+    start_date = datetime(2024, 3, 18)
+    end_date = datetime(2024, 7, 6)
+    
+    all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start=start_date, end=end_date)
+    return jsonify(all_modules)
+
+@app.route('/process_module_selection', methods=['POST'])
+@login_required
+def process_module_selection():
+    selected_items = request.form.getlist('selected_items')
+
+    if current_user.is_authenticated:
+        current_user.modules = json.dumps(selected_items)
         db.session.commit()
     else:
         print("User is not authenticated")

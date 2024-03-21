@@ -27,12 +27,13 @@ def get_all_semesters() -> list[dict]:
     with get_untis_session().login() as session:
         sorted_semesters = sorted(session.klassen(), key=lambda klasse: klasse.name)
 
-        for semester_id, klasse in enumerate(sorted_semesters, start=1):  # Start IDs from 1
+        for semester_id, klasse in enumerate(sorted_semesters):
             semesters.append({"id": str(semester_id), "name": klasse.name})
     return semesters
     
 def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:datetime) -> set:
-    modules = set()
+    modules = []
+    _set = set()
     with get_untis_session().login() as session:
         for sem in semesters:
             klasse = session.klassen().filter(name=sem)[0]
@@ -42,7 +43,9 @@ def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:dateti
                     if periods:
                         for period in periods:
                             for subject in period.subjects:
-                                modules.add(subject.long_name)
+                                _set.add(subject.long_name)
+    for module_id, module_name in enumerate(sorted(list(_set))):
+            modules.append({"id": str(module_id), "name": module_name})
     return modules
 
 def get_events_from_modules(modules:list[str], semesters:list[str], start:datetime, end:datetime) -> list[dict]:
