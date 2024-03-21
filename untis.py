@@ -22,12 +22,14 @@ def get_untis_session():
     untis_useragent = "WebUntis Test"
     return webuntis.Session(username=untis_username, password=untis_password, server=untis_server, school=untis_school, useragent=untis_useragent)
 
-def get_all_semesters() -> list[str]:
+def get_all_semesters() -> list[dict]:
+    semesters = []
     with get_untis_session().login() as session:
-        semesters = []
-        for index, klasse in enumerate(session.klassen()):
-            semesters.append({"id":index, "name":klasse.name})
-        return semesters
+        sorted_semesters = sorted(session.klassen(), key=lambda klasse: klasse.name)
+
+        for semester_id, klasse in enumerate(sorted_semesters, start=1):  # Start IDs from 1
+            semesters.append({"id": str(semester_id), "name": klasse.name})
+    return semesters
     
 def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:datetime) -> set:
     modules = set()
