@@ -6,9 +6,7 @@ class Config:
         self.defaults = {
             "database_uri": "sqlite:///database.db",
             "database_path": "instance/database.db",
-            "encryption_secret_key": "thisisasecretkey",
-            "minimum_start_date": "2024-03-18",
-            "maximum_end_date": "2024-07-06",
+            "encryption_secret_key": "obgt5cDzktDQNZA5dg49Lg/374/o4ZGX5rOY2N/9y0RzC72Y97NdYQ2I5fGjCCO9rIh6dLZ68v1CHQMtunhW2DtvrpDqLYELogKU",
             "untis_username": "ITS1",
             "untis_password": "",
             "untis_server": "hepta.webuntis.com",

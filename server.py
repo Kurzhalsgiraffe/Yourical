@@ -93,7 +93,8 @@ def register():
     else:
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data)
-            new_user = User(username=form.username.data, password=hashed_password, semesters=json.dumps({}), modules=json.dumps({}), start_date=config.get_config("minimum_start_date"), end_date=config.get_config("maximum_end_date"))
+            schoolyear = untis.get_current_schoolyear()
+            new_user = User(username=form.username.data, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"])
             db.session.add(new_user)
             db.session.commit()
             flash('Registration successful. You can now log in.', 'success')
@@ -143,8 +144,10 @@ def process_module_selection():
 def set_date():
     start_date_str = request.form.get('startDateInput')
     end_date_str = request.form.get('endDateInput')
-    min_start_date_str = config.get_config("minimum_start_date")
-    max_end_date_str = config.get_config("maximum_end_date")
+
+    schoolyear = untis.get_current_schoolyear()
+    min_start_date_str = schoolyear["start_date"]
+    max_end_date_str = schoolyear["end_date"]
 
     if datetime.strptime(start_date_str, "%Y-%m-%d") < datetime.strptime(min_start_date_str, "%Y-%m-%d"):
         start_date_str = min_start_date_str
@@ -163,8 +166,9 @@ def get_date():
 @app.route('/reset_date', methods=['POST'])
 @login_required
 def reset_date():
-    min_start_date_str = config.get_config("minimum_start_date")
-    max_end_date_str = config.get_config("maximum_end_date")
+    schoolyear = untis.get_current_schoolyear()
+    min_start_date_str = schoolyear["start_date"]
+    max_end_date_str = schoolyear["end_date"]
 
     current_user.start_date = min_start_date_str
     current_user.end_date = max_end_date_str
