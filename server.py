@@ -154,6 +154,7 @@ def set_date():
 
     current_user.start_date = start_date_str
     current_user.end_date = end_date_str
+    db.session.commit()
     return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
 
 @app.route('/get_date', methods=['GET'])
@@ -168,6 +169,7 @@ def reset_date():
 
     current_user.start_date = min_start_date_str
     current_user.end_date = max_end_date_str
+    db.session.commit()
     return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
 
 ## ----- MAIN ----- ##
