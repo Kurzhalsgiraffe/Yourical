@@ -13,7 +13,6 @@ def get_untis_session():
     return webuntis.Session(username=untis_username, password=untis_password, server=untis_server, school=untis_school, useragent=untis_useragent)
 
 def get_current_schoolyear():
-    print("pipi")
     with get_untis_session().login() as session:
         start_date = session.schoolyears().current.start
         end_date = session.schoolyears().current.end
