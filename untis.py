@@ -5,7 +5,6 @@ import config_manager
 config = config_manager.Config("settings.json")
 
 def get_untis_session():
-    
     untis_username = config.get_config("untis_username")
     untis_password = config.get_config("untis_password")
     untis_server = config.get_config("untis_server")

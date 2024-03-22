@@ -7,8 +7,6 @@ class Config:
             "database_uri": "sqlite:///database.db",
             "database_path": "instance/database.db",
             "encryption_secret_key": "thisisasecretkey",
-            "start_date": "2024-03-18",
-            "end_date": "2024-07-06",
             "minimum_start_date": "2024-03-18",
             "maximum_end_date": "2024-07-06",
             "untis_username": "ITS1",

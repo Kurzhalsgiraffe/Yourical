@@ -36,6 +36,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     semesters = db.Column(db.TEXT)
     modules = db.Column(db.TEXT)
+    start_date = db.Column(db.TEXT)
+    end_date = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -91,7 +93,7 @@ def register():
     else:
         if form.validate_on_submit():
             hashed_password = bcrypt.generate_password_hash(form.password.data)
-            new_user = User(username=form.username.data, password=hashed_password, semesters=json.dumps({}), modules=json.dumps({}))
+            new_user = User(username=form.username.data, password=hashed_password, semesters=json.dumps({}), modules=json.dumps({}), start_date=config.get_config("minimum_start_date"), end_date=config.get_config("maximum_end_date"))
             db.session.add(new_user)
             db.session.commit()
             flash('Registration successful. You can now log in.', 'success')
@@ -119,8 +121,8 @@ def process_semester_selection():
 @app.route('/get_module_list')
 def get_module_list():
     semesters = json.loads(current_user.semesters)
-    start_date = datetime.strptime(config.get_config("start_date"), '%Y-%m-%d')
-    end_date = datetime.strptime(config.get_config("end_date"), '%Y-%m-%d')
+    start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
     all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
     return jsonify(all_modules)
 
@@ -150,15 +152,13 @@ def set_date():
     if datetime.strptime(end_date_str, "%Y-%m-%d") > datetime.strptime(max_end_date_str, "%Y-%m-%d"):
         end_date_str = max_end_date_str
 
-    config.update_config("start_date", start_date_str)
-    config.update_config("end_date", end_date_str)
+    current_user.start_date = start_date_str
+    current_user.end_date = end_date_str
     return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
 
 @app.route('/get_date', methods=['GET'])
 def get_date():
-    start_date_str = config.get_config("start_date")
-    end_date_str = config.get_config("end_date")
-    return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
+    return jsonify({'start_date': current_user.start_date, 'end_date': current_user.end_date})
 
 @app.route('/reset_date', methods=['POST'])
 @login_required
@@ -166,8 +166,8 @@ def reset_date():
     min_start_date_str = config.get_config("minimum_start_date")
     max_end_date_str = config.get_config("maximum_end_date")
 
-    config.update_config("start_date", min_start_date_str)
-    config.update_config("end_date", max_end_date_str)
+    current_user.start_date = min_start_date_str
+    current_user.end_date = max_end_date_str
     return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
 
 ## ----- MAIN ----- ##

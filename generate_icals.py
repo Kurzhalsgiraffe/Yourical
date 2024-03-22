@@ -27,7 +27,7 @@ def get_events_from_database():
         conn = sqlite3.connect(dbfile, check_same_thread=False)
         cursor = conn.cursor()
 
-        sql = "SELECT username, semesters, modules FROM user"
+        sql = "SELECT username, semesters, modules, start_date, end_date FROM user"
         data = cursor.execute(sql).fetchall()
         
         for entry in data:       
@@ -35,8 +35,13 @@ def get_events_from_database():
                 username = entry[0]
                 semesters_json = entry[1]
                 modules_json = entry[2]
+                start_date_str = entry[3]
+                end_date_str = entry[4]
+
                 modules = json.loads(modules_json)
                 semesters = json.loads(semesters_json)
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
                 events[username] = untis.get_events_from_modules(modules=modules, semesters=semesters, start_date=start_date, end_date=end_date)
             except json.JSONDecodeError as json_err:
@@ -51,9 +56,6 @@ def get_events_from_database():
 
 
 if __name__ == "__main__":
-    start_date = datetime.strptime(config.get_config("start_date"), '%Y-%m-%d')
-    end_date = datetime.strptime(config.get_config("end_date"), '%Y-%m-%d')
-
     events = get_events_from_database()
     for name in events:
         ical_data = create_ical(events[name])
