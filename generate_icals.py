@@ -31,7 +31,10 @@ def create_ical(events:list[dict]):
 
     for event in events:
         event_obj = Event()
-        event_obj.add('summary', event['name'])
+        if event['status'] == "cancelled":
+            event_obj.add('summary', f"ENTFÄLLT: {event['name']}")
+        else:
+            event_obj.add('summary', event['name'])
         event_obj.add('dtstart', event['start'])
         event_obj.add('dtend', event['end'])
         event_obj.add('location', event['rooms'])

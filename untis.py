@@ -54,14 +54,13 @@ def get_events_from_modules(modules:list[str], semesters:list[str], start_date:d
                 for _, periods in row:
                     if periods:
                         for period in periods:
-                            if period.code != "cancelled":
-                                for subject in period.subjects:
-                                    if subject.long_name in modules:
-                                        events.append({
-                                            'name': subject.long_name,
-                                            'start': period.start,
-                                            'end': period.end,
-                                            'rooms': [i.name for i in period.rooms],
-                                            'rooms_long': [i.long_name for i in period.rooms]
-                                        })
+                            for subject in period.subjects:
+                                if subject.long_name in modules:
+                                    events.append({
+                                        'name': subject.long_name,
+                                        'start': period.start,
+                                        'end': period.end,
+                                        'rooms': [i.name for i in period.rooms],
+                                        'status': period.code
+                                    })
     return events
