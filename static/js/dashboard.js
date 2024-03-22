@@ -49,9 +49,27 @@ function submitModuleForm() {
     return false;
 }
 
+function submitDateForm() {
+    var formData = $("#dateForm").serialize();
+    $.post("/set_date", formData, function (response) {
+        console.log("Form submitted successfully");
+    });
+    return false;
+}
+
 $(document).ready(function () {
     fetchSemesterListItems();
     fetchModuleListItems();
     $("#semesterItemForm").submit(submitSemesterForm);
     $("#moduleItemForm").submit(submitModuleForm);
+    $("#dateForm").submit(submitDateForm);
+
+   
+
+    $.get("/get_date", function(data) {
+        // Set start date input value
+        $('#startDateInput').val(data.start_date);
+        // Set end date input value
+        $('#endDateInput').val(data.end_date);
+    });
 });

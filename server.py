@@ -10,6 +10,9 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import json
 import untis
 
+start_date = datetime(2024, 3, 18)
+end_date = datetime(2024, 7, 6)
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
@@ -31,8 +34,8 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
-    semesters = db.Column(db.JSON)
-    modules = db.Column(db.JSON)
+    semesters = db.Column(db.TEXT)
+    modules = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -116,9 +119,6 @@ def process_semester_selection():
 @app.route('/get_module_list')
 def get_module_list():
     semesters = json.loads(current_user.semesters)
-
-    start_date = datetime(2024, 3, 18) # TODO: Auf dem Webinterface auswählen
-    end_date = datetime(2024, 7, 6)
     
     all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start=start_date, end=end_date)
     return jsonify(all_modules)
@@ -135,6 +135,19 @@ def process_module_selection():
         print("User is not authenticated")
 
     return ""
+
+@app.route('/set_date', methods=['POST']) # TODO: Fehler von Untis catchen wenn Datum über Semestergrenze geht
+@login_required
+def set_date():
+    global start_date
+    global end_date
+    start_date = datetime.strptime(request.form.get('startDateInput'), '%Y-%m-%d')
+    end_date = datetime.strptime(request.form.get('endDateInput'), '%Y-%m-%d')
+    return ""
+
+@app.route('/get_date', methods=['GET'])
+def get_date():
+    return jsonify({'start_date': start_date.strftime('%Y-%m-%d'), 'end_date': end_date.strftime('%Y-%m-%d')})
 
 ## ----- MAIN ----- ##
 

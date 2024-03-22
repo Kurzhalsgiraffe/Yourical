@@ -1,18 +1,5 @@
 import webuntis
 from datetime import datetime
-from icalendar import Calendar, Event
-
-def create_ical(events:list[dict]):
-    cal = Calendar()
-    for event in events:
-        event_obj = Event()
-        event_obj.add('summary', event['name'])
-        event_obj.add('dtstart', event['start'])
-        event_obj.add('dtend', event['end'])
-        event_obj.add('location', event['rooms'])
-        cal.add_component(event_obj)
-
-    return cal.to_ical()
 
 def get_untis_session():
     untis_username = "ITS1"
@@ -65,34 +52,7 @@ def get_events_from_modules(modules:list[str], semesters:list[str], start:dateti
                                             'name': subject.long_name,
                                             'start': period.start,
                                             'end': period.end,
-                                            'rooms': period.rooms
+                                            'rooms': [i.name for i in period.rooms],
+                                            'rooms_long': [i.long_name for i in period.rooms]
                                         })
     return events
-
-
-
-if __name__ == "__main__":
-    # all_semesters = get_all_semesters()
-    # all_modules = get_all_modules_of_semesters(all_semesters[:3], start=start_date, end=end_date)
-    # print(all_modules)
-
-    start_date = datetime(2024, 3, 18)
-    end_date = datetime(2024, 7, 6)
-
-    modules = ["Praktikum Maschinelles Lernen",
-            "Maschinelles Lernen",
-            "Security und Internet der Dinge",
-            "Projekt Security und Internet der Dinge",
-            "Sensoren und Aktoren",
-            "Chipdesign",
-            "WPM_Innovation and Transfer Competence",
-            "WPM Advanced Programming"
-            ]
-
-    semesters = ["SE-AC_SS"]
-
-    events = get_events_from_modules(modules=modules, semesters=semesters, start=start_date, end=end_date)
-    ical_data = create_ical(events)
-
-    with open('my_calendar.ics', 'wb') as f:
-        f.write(ical_data)

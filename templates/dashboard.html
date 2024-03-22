@@ -11,6 +11,14 @@
 </head>
 
 <body>
+    <form id="dateForm">
+        <label for="dateInput">start date:</label>
+        <input type="date" id="startDateInput" name="startDateInput">
+        <label for="dateInput">end date:</label>
+        <input type="date" id="endDateInput" name="endDateInput">
+        <button type="submit" id="submitsemesterButton">Submit</button>
+    </form>
+      
     <a href="{{url_for('logout')}}">logout</a>
 
     <h2>Select your Semesters</h2>
