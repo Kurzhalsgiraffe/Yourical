@@ -160,6 +160,16 @@ def get_date():
     end_date_str = config.get_config("end_date")
     return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
 
+@app.route('/reset_date', methods=['POST'])
+@login_required
+def reset_date():
+    min_start_date_str = config.get_config("minimum_start_date")
+    max_end_date_str = config.get_config("maximum_end_date")
+
+    config.update_config("start_date", min_start_date_str)
+    config.update_config("end_date", max_end_date_str)
+    return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
+
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":

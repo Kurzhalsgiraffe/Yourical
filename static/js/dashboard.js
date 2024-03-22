@@ -65,7 +65,13 @@ $(document).ready(function () {
     $("#semesterItemForm").submit(submitSemesterForm);
     $("#moduleItemForm").submit(submitModuleForm);
     $("#dateForm").submit(submitDateForm);
-
+    $("#dateForm").on('reset', function() {
+        $.post("/reset_date", function(response) {
+            console.log("Date reset successfully");
+            $('#startDateInput').val(response.start_date);
+            $('#endDateInput').val(response.end_date);
+        });
+    });
    
 
     $.get("/get_date", function(data) {
