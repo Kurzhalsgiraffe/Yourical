@@ -1,12 +1,16 @@
 import webuntis
 from datetime import datetime
+import config_manager
+
+config = config_manager.Config("settings.json")
 
 def get_untis_session():
-    untis_username = "ITS1"
-    untis_password = ""
-    untis_server = "hepta.webuntis.com"
-    untis_school = "HS-Albstadt"
-    untis_useragent = "WebUntis Test"
+    
+    untis_username = config.get_config("untis_username")
+    untis_password = config.get_config("untis_password")
+    untis_server = config.get_config("untis_server")
+    untis_school = config.get_config("untis_school")
+    untis_useragent = config.get_config("untis_useragent")
     return webuntis.Session(username=untis_username, password=untis_password, server=untis_server, school=untis_school, useragent=untis_useragent)
 
 def get_all_semesters() -> list[dict]:
@@ -18,13 +22,13 @@ def get_all_semesters() -> list[dict]:
             semesters.append({"id": str(semester_id), "name": klasse.name})
     return semesters
     
-def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:datetime) -> set:
+def get_all_modules_of_semesters(semesters:list[str], start_date:datetime, end_date:datetime) -> set:
     modules = []
     _set = set()
     with get_untis_session().login() as session:
         for sem in semesters:
             klasse = session.klassen().filter(name=sem)[0]
-            table = session.timetable_extended(klasse=klasse, start=start, end=end).to_table()
+            table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
             for _, row in table:
                 for _, periods in row:
                     if periods:
@@ -35,12 +39,12 @@ def get_all_modules_of_semesters(semesters:list[str], start:datetime, end:dateti
             modules.append({"id": str(module_id), "name": module_name})
     return modules
 
-def get_events_from_modules(modules:list[str], semesters:list[str], start:datetime, end:datetime) -> list[dict]:
+def get_events_from_modules(modules:list[str], semesters:list[str], start_date:datetime, end_date:datetime) -> list[dict]:
     events = []
     with get_untis_session().login() as session:
         for sem in semesters:
             klasse = session.klassen().filter(name=sem)[0]
-            table = session.timetable_extended(klasse=klasse, start=start, end=end).to_table()
+            table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
             for _, row in table:
                 for _, periods in row:
                     if periods:

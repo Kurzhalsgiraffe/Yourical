@@ -9,13 +9,13 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import json
 import untis
+import config_manager
 
-start_date = datetime(2024, 3, 18)
-end_date = datetime(2024, 7, 6)
+config = config_manager.Config("settings.json")
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'thisisasecretkey'
+app.config['SQLALCHEMY_DATABASE_URI'] = config.get_config("database_uri")
+app.config['SECRET_KEY'] = config.get_config("encryption_secret_key")
 
 talisman = Talisman(app, force_https=True)
 
@@ -119,8 +119,9 @@ def process_semester_selection():
 @app.route('/get_module_list')
 def get_module_list():
     semesters = json.loads(current_user.semesters)
-    
-    all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start=start_date, end=end_date)
+    start_date = datetime.strptime(config.get_config("start_date"), '%Y-%m-%d')
+    end_date = datetime.strptime(config.get_config("end_date"), '%Y-%m-%d')
+    all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
     return jsonify(all_modules)
 
 @app.route('/process_module_selection', methods=['POST'])
@@ -136,18 +137,28 @@ def process_module_selection():
 
     return ""
 
-@app.route('/set_date', methods=['POST']) # TODO: Fehler von Untis catchen wenn Datum über Semestergrenze geht
+@app.route('/set_date', methods=['POST'])
 @login_required
 def set_date():
-    global start_date
-    global end_date
-    start_date = datetime.strptime(request.form.get('startDateInput'), '%Y-%m-%d')
-    end_date = datetime.strptime(request.form.get('endDateInput'), '%Y-%m-%d')
-    return ""
+    start_date_str = request.form.get('startDateInput')
+    end_date_str = request.form.get('endDateInput')
+    min_start_date_str = config.get_config("minimum_start_date")
+    max_end_date_str = config.get_config("maximum_end_date")
+
+    if datetime.strptime(start_date_str, "%Y-%m-%d") < datetime.strptime(min_start_date_str, "%Y-%m-%d"):
+        start_date_str = min_start_date_str
+    if datetime.strptime(end_date_str, "%Y-%m-%d") > datetime.strptime(max_end_date_str, "%Y-%m-%d"):
+        end_date_str = max_end_date_str
+
+    config.update_config("start_date", start_date_str)
+    config.update_config("end_date", end_date_str)
+    return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
 
 @app.route('/get_date', methods=['GET'])
 def get_date():
-    return jsonify({'start_date': start_date.strftime('%Y-%m-%d'), 'end_date': end_date.strftime('%Y-%m-%d')})
+    start_date_str = config.get_config("start_date")
+    end_date_str = config.get_config("end_date")
+    return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
 
 ## ----- MAIN ----- ##
 
