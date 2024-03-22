@@ -62,12 +62,13 @@ def get_all_events_from_database(user=None):
                 start_date_str = entry[3]
                 end_date_str = entry[4]
 
-                modules = json.loads(modules_json)
-                semesters = json.loads(semesters_json)
-                start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-                end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+                if semesters_json and modules_json:
+                    modules = json.loads(modules_json)
+                    semesters = json.loads(semesters_json)
+                    start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+                    end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
-                events[username] = untis.get_events_from_modules(modules=modules, semesters=semesters, start_date=start_date, end_date=end_date)
+                    events[username] = untis.get_events_from_modules(modules=modules, semesters=semesters, start_date=start_date, end_date=end_date)
             except json.JSONDecodeError as json_err:
                 print(f"Error parsing JSON for user {username}: {json_err}")
 
