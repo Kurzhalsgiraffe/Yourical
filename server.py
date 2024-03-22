@@ -110,9 +110,10 @@ def register():
 @app.route('/get_semester_list')
 def get_semester_list():
     all_semesters = untis.get_all_semesters()
-    selection = json.loads(current_user.semesters)
-    for i in all_semesters:
-        i["selected"] = i["name"] in selection
+    if current_user.semesters:
+        selection = json.loads(current_user.semesters)
+        for i in all_semesters:
+            i["selected"] = i["name"] in selection
     return jsonify(all_semesters)
 
 @app.route('/process_semester_selection', methods=['POST'])
@@ -129,15 +130,17 @@ def process_semester_selection():
 
 @app.route('/get_module_list')
 def get_module_list():
-    semesters = json.loads(current_user.semesters)
-    start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
-    end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
-    all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
-    selection = json.loads(current_user.modules)
+    all_modules = []
+    if current_user.semesters:
+        semesters = json.loads(current_user.semesters)
+        start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
+        all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
 
-    for i in all_modules:
-        i["selected"] = i["name"] in selection
-
+        if current_user.modules:
+            selection = json.loads(current_user.modules)
+            for i in all_modules:
+                i["selected"] = i["name"] in selection
     return jsonify(all_modules)
 
 @app.route('/process_module_selection', methods=['POST'])
