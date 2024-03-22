@@ -33,8 +33,8 @@ def get_all_events_from_database(user=None):
         else:
             sql = "SELECT username, semesters, modules, start_date, end_date FROM user"
             data = cursor.execute(sql).fetchall()
-        
-        for entry in data:       
+
+        for entry in data:
             try:
                 username = entry[0]
                 semesters_json = entry[1]
