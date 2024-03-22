@@ -3,3 +3,4 @@
 *.pem
 *.key
 __pycache__
+Dockerfile

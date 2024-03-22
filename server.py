@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import Flask, flash, jsonify, render_template, request, url_for, redirect
+from flask import Flask, flash, jsonify, render_template, request, send_from_directory, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -10,6 +10,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import json
 import untis
 import config_manager
+import generate_icals
 
 config = config_manager.Config("settings.json")
 
@@ -134,6 +135,7 @@ def process_module_selection():
     if current_user.is_authenticated:
         current_user.modules = json.dumps(selected_items)
         db.session.commit()
+        generate_icals.generate_icals(current_user.username)
     else:
         print("User is not authenticated")
 
@@ -174,6 +176,14 @@ def reset_date():
     current_user.end_date = max_end_date_str
     db.session.commit()
     return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
+
+@app.route('/ical/<user>')
+def serve_file(user):
+    directory = 'calendars'
+    try:
+        return send_from_directory(directory, f"{user}.calendar.ics")
+    except FileNotFoundError:
+        return "file not found", 404
 
 ## ----- MAIN ----- ##
 

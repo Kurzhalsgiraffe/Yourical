@@ -20,15 +20,19 @@ def create_ical(events:list[dict]):
 
     return cal.to_ical()
 
-def get_events_from_database():
+def get_all_events_from_database(user=None):
     dbfile = config.get_config("database_path")
     events = dict()
     try:
         conn = sqlite3.connect(dbfile, check_same_thread=False)
         cursor = conn.cursor()
 
-        sql = "SELECT username, semesters, modules, start_date, end_date FROM user"
-        data = cursor.execute(sql).fetchall()
+        if user:
+            sql = "SELECT username, semesters, modules, start_date, end_date FROM user WHERE username=?"
+            data = cursor.execute(sql,(user,)).fetchall()
+        else:
+            sql = "SELECT username, semesters, modules, start_date, end_date FROM user"
+            data = cursor.execute(sql).fetchall()
         
         for entry in data:       
             try:
@@ -53,11 +57,13 @@ def get_events_from_database():
     except sqlite3.Error as err:
         print(err, traceback.format_exc())
 
-
-
-if __name__ == "__main__":
-    events = get_events_from_database()
+def generate_icals(user=None):
+    events = get_all_events_from_database(user=user)
     for name in events:
         ical_data = create_ical(events[name])
         with open(f'calendars/{name}.calendar.ics', 'wb') as f:
             f.write(ical_data)
+
+
+if __name__ == "__main__":
+    generate_icals()
