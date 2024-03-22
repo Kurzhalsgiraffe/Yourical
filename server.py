@@ -98,7 +98,7 @@ def register():
             db.session.commit()
             flash('Registration successful. You can now log in.', 'success')
             return redirect(url_for('login'))
-            
+
     return render_template('register.html', form=form)
 
 @app.route('/get_semester_list')
@@ -115,7 +115,6 @@ def process_semester_selection():
         db.session.commit()
     else:
         print("User is not authenticated")
-
     return ""
 
 @app.route('/get_module_list')
