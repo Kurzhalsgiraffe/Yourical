@@ -5,12 +5,18 @@ function fetchSemesterListItems() {
 
         var currentRow;
         // Append each item to the table with 12 columns
-        data.forEach(function (item, index) {
+        data.forEach(function (item, index, selected) {
             if (index % 12 === 0) {
                 currentRow = $('<tr></tr>');
                 semesterItemTable.append(currentRow);
             }
-            currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"><label for="' + item.id + '">' + item.name + '</label></td>');
+            if (data[index].selected) {
+                checked = "checked"
+            } else {
+                checked = ""
+            }
+            
+            currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"' + checked + '><label for="' + item.id + '">' + item.name + '</label></td>');
         });
     });
 }
@@ -36,7 +42,12 @@ function fetchModuleListItems() {
                 currentRow = $('<tr></tr>');
                 moduleItemTable.append(currentRow);
             }
-            currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"><label for="' + item.id + '">' + item.name + '</label></td>');
+            if (data[index].selected) {
+                checked = "checked"
+            } else {
+                checked = ""
+            }
+            currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"' + checked + '><label for="' + item.id + '">' + item.name + '</label></td>');
         });
     });
 }

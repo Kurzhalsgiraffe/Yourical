@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = config.get_config("database_uri")
 app.config['SECRET_KEY'] = config.get_config("encryption_secret_key")
 
-talisman = Talisman(app, force_https=True)
+#talisman = Talisman(app, force_https=True)
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -55,6 +55,8 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
     submit = SubmitField('Login')
 
+# ------ Page Routes  ------ 
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -62,7 +64,7 @@ def index():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dashboard.html', current_user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -103,9 +105,15 @@ def register():
 
     return render_template('register.html', form=form)
 
+# ------ Functional Routes  ------ 
+
 @app.route('/get_semester_list')
 def get_semester_list():
-    return jsonify(untis.get_all_semesters())
+    all_semesters = untis.get_all_semesters()
+    selection = json.loads(current_user.semesters)
+    for i in all_semesters:
+        i["selected"] = i["name"] in selection
+    return jsonify(all_semesters)
 
 @app.route('/process_semester_selection', methods=['POST'])
 @login_required
@@ -125,6 +133,11 @@ def get_module_list():
     start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
     end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
     all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
+    selection = json.loads(current_user.modules)
+
+    for i in all_modules:
+        i["selected"] = i["name"] in selection
+
     return jsonify(all_modules)
 
 @app.route('/process_module_selection', methods=['POST'])
@@ -177,6 +190,8 @@ def reset_date():
     db.session.commit()
     return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
 
+# ------ Download Routes  ------ 
+
 @app.route('/ical/<user>')
 def serve_file(user):
     directory = 'calendars'
@@ -185,7 +200,9 @@ def serve_file(user):
     except FileNotFoundError:
         return "file not found", 404
 
+
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=443, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))
+    #app.run(debug=True, host="0.0.0.0", port=443, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))
+    app.run(host="127.0.0.1")
