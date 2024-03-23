@@ -11,6 +11,10 @@
 </head>
 
 <body>
+    <div class="gradient-bg"></div>
+    <div class="top-right">
+        <a href="{{url_for('logout')}}">Log Out</a>
+    </div>
     <form id="dateForm">
         <label for="dateInput">start date:</label>
         <input type="date" id="startDateInput" name="startDateInput">
@@ -19,8 +23,6 @@
         <button type="submit" id="submitDateButton">Submit</button>
         <button type="reset" id="resetDateButton">Reset</button>
     </form>
-      
-    <a href="{{url_for('logout')}}">logout</a>
 
     <h2>Select your Semesters</h2>
     <form id="semesterItemForm">

@@ -66,6 +66,10 @@ def index():
 def dashboard():
     return render_template('dashboard.html', current_user=current_user)
 
+@app.route('/faq', methods=['GET'])
+def faq():
+    return render_template('faq.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
