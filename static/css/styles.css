@@ -209,6 +209,10 @@ form button:hover {
               0 0 100px var(--color-bg1);
 }
 
+h2 {
+  color:white;
+}
+
 form#semesterItemForm button,
 form#moduleItemForm button {
   display: block;
