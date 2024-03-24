@@ -168,12 +168,20 @@ html, body {
 
 .itemTable tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.1);
-  color: white;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .itemTable tr:nth-child(odd) {
   background-color: rgba(255, 255, 255, 0.2);
-  color: black;
+  color: white;
+}
+
+.itemTable input {
+  width: 20px;
+  height: 20px;
+  accent-color: black;
+  vertical-align:middle;
+  margin-right:10px;
 }
 
 form button {

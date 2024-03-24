@@ -13,7 +13,7 @@ function updateSemesterListItems(data) {
     semesterItemTable.empty();
 
     var containerWidth = semesterItemTable.width();
-    var numColumns = Math.floor(containerWidth / 150); // Assuming each column width is 150px, adjust as needed
+    var numColumns = Math.floor(containerWidth / 200); // Assuming each column width is 150px, adjust as needed
 
     var currentRow;
     data.forEach(function (item, index) {
