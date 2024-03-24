@@ -59,7 +59,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', current_user=current_user)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -68,7 +68,11 @@ def dashboard():
 
 @app.route('/faq', methods=['GET'])
 def faq():
-    return render_template('faq.html')
+    return render_template('faq.html', current_user=current_user)
+
+@app.route('/impressum', methods=['GET'])
+def impressum():
+    return render_template('impressum.html', current_user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -212,4 +216,5 @@ def serve_file(user):
 
 if __name__ == "__main__":
     #app.run(debug=True, host="0.0.0.0", port=443, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))
-    app.run(host="127.0.0.1")
+    #app.run(host="127.0.0.1")
+    app.run(host="127.0.0.1", debug=True)

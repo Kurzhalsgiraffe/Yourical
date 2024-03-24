@@ -16,19 +16,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
-}
-
-.top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.top-right a {
-    margin-left: 10px;
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
+    color:white;
 }
 
 .gradient-bg {
@@ -194,7 +182,6 @@ form button {
   text-transform: uppercase;
   overflow: hidden;
   transition: .5s;
-  margin-top: 40px;
   letter-spacing: 4px;
   background: var(--color4);
 }
@@ -207,10 +194,6 @@ form button:hover {
               0 0 25px var(--color-bg1),
               0 0 50px var(--color-bg1),
               0 0 100px var(--color-bg1);
-}
-
-h2 {
-  color:white;
 }
 
 form#semesterItemForm button,
@@ -236,4 +219,78 @@ form#moduleItemForm button {
 #dateForm label {
   font-size: 20px;
   color: white;
+}
+
+.header {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.logo img {
+  height: 40px;
+}
+
+.navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+.navbar ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.navbar ul li:last-child {
+  margin-right: 0;
+}
+
+.navbar ul li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.navbar ul li a:hover {
+  color: #007bff;
+}
+
+.user a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.user a:hover {
+  color: #007bff;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.link-box {
+  display: inline-block;
+  padding: 12px 20px;
+  border: 2px solid #ffffff; /* White border */
+  border-radius: 5px;
+  background-color: rgba(240, 240, 240, 0.2); /* Slightly transparent light gray background */
+  color: #000000;
+
+  transition: background-color 0.3s ease;
+  font-size: 20px;
+}
+
+.link-box:hover {
+  background-color: rgba(240, 240, 240, 0.8);
+
+  color: #000000;
+}
+
+.bottom-space {
+  margin-bottom: 200px;
 }
