@@ -224,6 +224,19 @@ form#moduleItemForm button {
   color: white;
 }
 
+@media screen and (max-width: 310px) {
+  #dateForm {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  #dateForm input[type="date"] {
+    flex: 1;
+    margin: 10px;
+  }
+}
+
 .wrapper {
   flex: 1;
 }
