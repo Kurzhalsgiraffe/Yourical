@@ -188,12 +188,12 @@ form button {
   display: inline-block;
   padding: 10px 20px;
   color: white;
-  font-size: 16px;
+  font-size: 14px;
   border-radius: 5px;
   text-transform: uppercase;
   overflow: hidden;
   transition: .5s;
-  letter-spacing: 4px;
+  letter-spacing: 2px;
   background: var(--color4);
 }
 
@@ -230,19 +230,19 @@ form#moduleItemForm button {
 #dateForm label {
   font-size: 20px;
   color: white;
+  vertical-align: middle;
 }
 
-@media screen and (max-width: 310px) {
-  #dateForm {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
+.flex-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
 
-  #dateForm input[type="date"] {
-    flex: 1;
-    margin: 10px;
-  }
+@media (max-width: 800px) {
+    .flex-container {
+        flex-direction: column;
+    }
 }
 
 .wrapper {
@@ -326,4 +326,10 @@ footer {
 
 .bottom-space {
   margin-bottom: 200px;
+}
+
+.alertContainer {
+  flex: content;
+  display:flex; justify-content: center;
+  min-height:70px;
 }

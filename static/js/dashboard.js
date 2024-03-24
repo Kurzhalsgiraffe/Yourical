@@ -30,8 +30,11 @@ function updateSemesterListItems(data) {
 function submitSemesterForm() {
     var formData = $("#semesterItemForm").serialize();
     $.post("/process_semester_selection", formData, function (response) {
-        console.log("Form submitted successfully");
+        $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
         fetchModuleListItems();
+    }).fail(function(xhr, status, error) {
+        var errorMessage = JSON.parse(xhr.responseText).message;
+        console.log("Error: " + errorMessage);
     });
     return false;
 }
@@ -68,7 +71,10 @@ function updateModuleListItems(data) {
 function submitModuleForm() {
     var formData = $("#moduleItemForm").serialize();
     $.post("/process_module_selection", formData, function (response) {
-        console.log("Form submitted successfully");
+        $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
+    }).fail(function(xhr, status, error) {
+        var errorMessage = JSON.parse(xhr.responseText).message;
+        console.log("Error: " + errorMessage);
     });
     return false;
 }

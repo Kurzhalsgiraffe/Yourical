@@ -6,13 +6,19 @@
 
 {% block content %}
     <div>
-        <form id="dateForm">
-            <label for="dateInput">Start:</label>
-            <input type="date" id="startDateInput" name="startDateInput">
-            <label for="dateInput">Ende:</label>
-            <input type="date" id="endDateInput" name="endDateInput">
-            <button type="submit" id="submitDateButton">Submit</button>
-            <button type="reset" id="resetDateButton">Reset</button>
+        <form id="dateForm" class="flex-container">
+            <div>
+                <label for="dateInput">Start:</label>
+                <input type="date" id="startDateInput" name="startDateInput">
+            </div>
+            <div>
+                <label for="dateInput">Ende:</label>
+                <input type="date" id="endDateInput" name="endDateInput">
+            </div>
+            <div>
+                <button type="submit" id="submitDateButton">Submit</button>
+                <button type="reset" id="resetDateButton">Reset</button>
+            </div>
         </form>
     </div>
     <div class="center-text">
@@ -26,8 +32,13 @@
             </table>
             <button type="submit" id="submitsemesterButton">Submit</button>
         </form>
+        <div class="alertContainer mt-2">
+            <div class="alert alert-success center-text" role="alert" id="semesterItemFormAlert" style="display: none;">
+                Semester selection saved
+            </div>
+        </div>
     </div>
-    <div class="center-text mt-5">
+    <div class="center-text mt-1">
         <h2>Kursauswahl</h2>
         <h5>Wähle hier deine Kurse aus verschiedenen Semestern die du belegen möchtest</h5>
     </div>
@@ -38,15 +49,20 @@
             </table>
             <button type="submit" id="submitmoduleButton">Submit</button>
         </form>
+        <div class="alertContainer mt-2">
+            <div class="alert alert-success" role="alert" id="moduleItemFormAlert" style="display: none;">
+                Modules saved, calendar created
+            </div>
+        </div>
     </div>
-    <div class="center-text mt-5">
+    <div class="center-text mt-1">
         <h2>ICalendar Link</h2>
         <div class="my-3">
             <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">https://yourical.de/ical/{{ current_user.username }}</a>
         </div>
-        <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar, Apple Calendar etc. hinzugefügt werden. <br>
-            Wir aktualisieren deinen Kalender Stunde, damit du keine Stundenplanänderungen verpasst. Der Link ändert sich dabei nicht!<br>
-        </h5>
+        <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar oder Apple Calendar per URL hinzugefügt werden. <br>
+            Wir aktualisieren deinen Kalender 2 mal pro Stunde, damit du keine Änderungen verpasst. Der Link ändert sich dabei nicht!<br>
+		</h5>
     </div>
 {% endblock %}
 

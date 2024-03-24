@@ -139,9 +139,10 @@ def process_semester_selection():
     if current_user.is_authenticated:
         current_user.semesters = json.dumps(selected_items)
         db.session.commit()
+        return jsonify({"message": "Selection saved"}), 200
     else:
         print("User is not authenticated")
-    return ""
+        return jsonify({"message": "User is not authenticated"}), 401
 
 @app.route('/get_module_list')
 def get_module_list():
@@ -167,10 +168,10 @@ def process_module_selection():
         current_user.modules = json.dumps(selected_items)
         db.session.commit()
         generate_icals.generate_icals(current_user.username)
+        return jsonify({"message": "Selection saved"}), 200
     else:
         print("User is not authenticated")
-
-    return ""
+        return jsonify({"message": "User is not authenticated"}), 401
 
 @app.route('/set_date', methods=['POST'])
 @login_required
