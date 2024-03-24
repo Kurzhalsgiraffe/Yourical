@@ -105,7 +105,7 @@ def register():
         existing_user_username = User.query.filter_by(username=username).first()
         if existing_user_username or not username.isalnum():
             if not username.isalnum():
-                flash('Only Alphanumerical Characters are allowed. Please choose a different name.', 'error')
+                flash('Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
             if existing_user_username:
                 flash('That username already exists. Please choose a different one.', 'error')
         else:
@@ -215,7 +215,8 @@ def reset_date():
 def serve_file(user):
     directory = 'calendars'
     try:
-        log_request(request.remote_addr, user)
+        ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
+        log_request(ip_address, user)
         return send_from_directory(directory, f"{user}.calendar.ics")
     except FileNotFoundError:
         return "file not found", 404
