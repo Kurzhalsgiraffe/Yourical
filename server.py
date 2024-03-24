@@ -70,9 +70,9 @@ def dashboard():
 def faq():
     return render_template('faq.html', current_user=current_user)
 
-@app.route('/impressum', methods=['GET'])
-def impressum():
-    return render_template('impressum.html', current_user=current_user)
+@app.route('/privacy_policy', methods=['GET'])
+def privacy_policy():
+    return render_template('privacy_policy.html', current_user=current_user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
