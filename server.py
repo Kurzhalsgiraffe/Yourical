@@ -215,9 +215,17 @@ def reset_date():
 def serve_file(user):
     directory = 'calendars'
     try:
+        log_request(request.remote_addr, user)
         return send_from_directory(directory, f"{user}.calendar.ics")
     except FileNotFoundError:
         return "file not found", 404
+
+# ------ Methods  ------ 
+
+def log_request(ip_address, user):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with open('request_log.txt', 'a') as log_file:
+        log_file.write(f"Timestamp: {timestamp}, IP Address: {ip_address}, User: {user}\n")
 
 
 ## ----- MAIN ----- ##
