@@ -77,16 +77,18 @@ def impressum():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
-                login_user(user)
-                return redirect(url_for('dashboard'))
+    if form.username.data:
+        username = form.username.data.lower()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=username).first()
+            if user:
+                if bcrypt.check_password_hash(user.password, form.password.data):
+                    login_user(user)
+                    return redirect(url_for('dashboard'))
+                else:
+                    flash('Incorrect password. Please try again.', 'error')
             else:
-                flash('Incorrect password. Please try again.', 'error')
-        else:
-            flash('User does not exist. Please register.', 'error')
+                flash('User does not exist. Please register.', 'error')
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -98,18 +100,23 @@ def logout():
 @ app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    existing_user_username = User.query.filter_by(username=form.username.data).first()
-    if existing_user_username:
-        flash('That username already exists. Please choose a different one.', 'error')
-    else:
-        if form.validate_on_submit():
-            hashed_password = bcrypt.generate_password_hash(form.password.data)
-            schoolyear = untis.get_current_schoolyear()
-            new_user = User(username=form.username.data, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"])
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Registration successful. You can now log in.', 'success')
-            return redirect(url_for('login'))
+    if form.username.data:
+        username = form.username.data.lower()
+        existing_user_username = User.query.filter_by(username=username).first()
+        if existing_user_username or not username.isalnum():
+            if not username.isalnum():
+                flash('Only Alphanumerical Characters are allowed. Please choose a different name.', 'error')
+            if existing_user_username:
+                flash('That username already exists. Please choose a different one.', 'error')
+        else:
+            if form.validate_on_submit():
+                hashed_password = bcrypt.generate_password_hash(form.password.data)
+                schoolyear = untis.get_current_schoolyear()
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"])
+                db.session.add(new_user)
+                db.session.commit()
+                flash('Registration successful. You can now log in.', 'success')
+                return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
 
