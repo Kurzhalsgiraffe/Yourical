@@ -41,11 +41,11 @@
     </div>
     <div class="center-text mt-5">
         <h2>ICalendar Link</h2>
-        <div class="my-2">
-            <a href="/ical/{{ current_user.username }}" class="link-box">https://yourical.de/ical/{{ current_user.username }}</a>
+        <div class="my-3">
+            <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">https://yourical.de/ical/{{ current_user.username }}</a>
         </div>
         <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar, Apple Calendar etc. hinzugefügt werden. <br>
-            Wir aktualisieren deinen Kalender Stunde, damit du keine Stundenplanänderungen verpasst. Der Link änbdert sich dabei nicht!<br>
+            Wir aktualisieren deinen Kalender Stunde, damit du keine Stundenplanänderungen verpasst. Der Link ändert sich dabei nicht!<br>
         </h5>
     </div>
 {% endblock %}

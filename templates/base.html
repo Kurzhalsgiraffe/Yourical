@@ -13,7 +13,21 @@
 </head>
 
 <body>
-    <div class="header">
+    <div class="user">
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+        <div></div>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+    </div>
+    
+    <div class="wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer mt-4">
         <div class="logo">
             <a href="{{ url_for('index') }}">
                 <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
@@ -26,17 +40,7 @@
                 <li><a href="{{ url_for('impressum') }}">Datenschutz</a></li>
             </ul>
         </div>
-        <div class="user">
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
-            {% endif %}
-        </div>
-    </div>
-
-    {% block content %}{% endblock %}
+    </footer>
 
     <div class="gradient-bg">
         <div class="gradients-container">
@@ -46,6 +50,7 @@
             <div class="g4"></div>
         </div>
     </div>
+
     <script src="{{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
     {% block additionaljavascript %}{% endblock %}
 </body>
