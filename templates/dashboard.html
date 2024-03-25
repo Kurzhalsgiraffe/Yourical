@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block additionalstyle %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fullcalendar.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/list.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.qtip.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fullcalendar.print.css') }}" media='print'>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/overall.css') }}">
+{% endblock %}
+
 {% block title %}
     Dashboard
 {% endblock %}
@@ -22,8 +30,10 @@
         </form>
     </div>
     <div class="center-text">
+        <h2>Für die beste Funktionalität im Desktop-Browser benutzen!</h2>
         <h2>Semesterauswahl</h2>
-        <h5>Wähle hier alle Semester, aus welchen du Kurse angezeigt bekommen möchtest.</h5>
+        <h5>Wähle hier alle Semester aus welchen du Kurse angezeigt bekommen möchtest.
+        Dies kannst du natürlich später ändern.</h5>
     </div>
     <div>
         <form id="semesterItemForm">
@@ -40,7 +50,7 @@
     </div>
     <div class="center-text mt-1">
         <h2>Kursauswahl</h2>
-        <h5>Wähle hier deine Kurse aus verschiedenen Semestern die du belegen möchtest</h5>
+        <h5>Wähle hier deine Kurse aus verschiedenen Semestern die du belegen möchtest.</h5>
     </div>
     <div>
         <form id="moduleItemForm">
@@ -60,12 +70,27 @@
         <div class="my-3">
             <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">https://yourical.de/ical/{{ current_user.username }}</a>
         </div>
-        <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar oder Apple Calendar per URL hinzugefügt werden. <br>
-            Wir aktualisieren deinen Kalender 2 mal pro Stunde, damit du keine Änderungen verpasst. Der Link ändert sich dabei nicht!<br>
-		</h5>
+        <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar, Apple Calendar und alle anderen per URL hinzugefügt werden.Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Änderungen verpasst. Der Link ändert sich dabei nicht!</h5>
+        <h2>&ShortDownArrow;  &ShortDownArrow; F5 um Termine anzuzeigen &ShortDownArrow;  &ShortDownArrow;</h2>
+    </div>
+    
+    <div id="ics-feeds"></div>
+    <div id='calendar' data-username="{{ current_user.username }}" style="margin:20px;"></div>
+    <div class="box-tip">
+        <div id="legend-feeds"></div>
     </div>
 {% endblock %}
 
 {% block additionaljavascript %}
-    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/copy.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/moment.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/fullcalendar.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/locale-all.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/ical.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/ical_events.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/ical_fullcalendar.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/jquery.qtip.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static',filename='js/custom_display.js')}}" type="application/javascript"></script>
 {% endblock %}

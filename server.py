@@ -84,6 +84,7 @@ def login():
             if user:
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     login_user(user)
+                    log_login(user.username)
                     return redirect(url_for('dashboard'))
                 else:
                     flash('Incorrect password. Please try again.', 'error')
@@ -228,6 +229,10 @@ def log_request(ip_address, user):
     with open('request_log.txt', 'a') as log_file:
         log_file.write(f"Timestamp: {timestamp}, IP Address: {ip_address}, User: {user}\n")
 
+def log_login(user):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with open('login_log.txt', 'a') as log_file:
+        log_file.write(f"Login:     Timestamp: {timestamp}, User: {user}\n")
 
 ## ----- MAIN ----- ##
 
