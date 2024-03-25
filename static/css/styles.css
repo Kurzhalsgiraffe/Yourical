@@ -10,7 +10,7 @@ html, body {
     flex-direction: column;
 }
   
-.text-container {
+.home-text-container {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -20,11 +20,21 @@ html, body {
   justify-content: center;
   align-items: center;
   font-size: 96px;
-  z-index: -99; /* Adjust the z-index to ensure it's above other elements */
+  z-index: -99;
   color: white;
   opacity: 0.8;
   user-select: none;
   text-shadow: 1px 1px rgba(0,0,0,0.1);
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #007bff;
 }
 
 .itemTable {
@@ -125,7 +135,7 @@ form#moduleItemForm button {
 
 .footer {
   background-color: rgba(0, 0, 0, 0.7);
-  padding: 10px;
+  padding: 10px 0;
   display: flex;
   justify-content: center;
   z-index: 1000;
@@ -144,6 +154,11 @@ form#moduleItemForm button {
   height: 40px;
 }
 
+.navbar {
+  margin: 0;
+  padding: 0;
+}
+
 .navbar ul {
   list-style: none;
   padding: 0;
@@ -160,28 +175,28 @@ form#moduleItemForm button {
   margin-right: 0;
 }
 
-.navbar ul li a {
-  text-decoration: none;
-  color: #fff;
-}
-
-.navbar ul li a:hover {
-  color: #007bff;
-}
-
 .user {
-  position: absolute;
-  top: 20px;
-  right: 20px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
-.user a {
-  text-decoration: none;
-  color: #fff;
+.user-content {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  max-width: 1536px;
+  width: 100%;
 }
 
-.user a:hover {
-  color: #007bff;
+.user ul li {
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.user ul li:last-child {
+  margin-right: 0;
 }
 
 .center-text {

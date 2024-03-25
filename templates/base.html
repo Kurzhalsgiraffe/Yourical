@@ -16,15 +16,22 @@
 
 <body>
     <div class="user">
-        {% if current_user.is_authenticated %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-        <div></div>
-            <a href="{{ url_for('login') }}">Login</a>
-            <a href="{{ url_for('register') }}">Register</a>
-        {% endif %}
+        <div class="user-content">
+            {% if current_user.is_authenticated %}
+            <div>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+            {% else %}
+            <div>
+                <ul>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
     </div>
-    
+
     <div class="wrapper">
         {% block content %}{% endblock %}
     </div>
