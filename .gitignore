@@ -3,5 +3,5 @@
 *.pem
 *.key
 __pycache__
-Dockerfile
 instance/database.db
+logs
