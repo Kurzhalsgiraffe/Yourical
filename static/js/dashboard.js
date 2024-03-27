@@ -72,6 +72,7 @@ function submitModuleForm() {
     var formData = $("#moduleItemForm").serialize();
     $.post("/process_module_selection", formData, function (response) {
         $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
+        load_events();
     }).fail(function(xhr, status, error) {
         var errorMessage = JSON.parse(xhr.responseText).message;
         console.log("Error: " + errorMessage);

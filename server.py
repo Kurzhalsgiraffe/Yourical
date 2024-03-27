@@ -226,12 +226,12 @@ def serve_file(user):
 
 def log_request(ip_address, user):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open('request_log.txt', 'a') as log_file:
+    with open(config.get_config("request_logfile"), 'a') as log_file:
         log_file.write(f"Timestamp: {timestamp}, IP Address: {ip_address}, User: {user}\n")
 
 def log_login(user):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open('login_log.txt', 'a') as log_file:
+    with open(config.get_config("login_logfile"), 'a') as log_file:
         log_file.write(f"Login:     Timestamp: {timestamp}, User: {user}\n")
 
 ## ----- MAIN ----- ##

@@ -2811,6 +2811,13 @@ locale('en', options_1.englishDefaults);
 Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = __webpack_require__(4);
 exports.globalDefaults = {
+    businessHours: {
+      // days of week. an array of zero-based day of week integers (0=Sunday)
+      daysOfWeek: [ 1, 2, 3, 4, 5, 6 ], // Monday - Saturday
+
+      startTime: '08:00:00', // a start time 
+      endTime: '19:00:00', // an end time 
+    },
     titleRangeSeparator: ' \u2013 ',
     monthYearFormat: 'MMMM YYYY',
     defaultTimedEventDuration: '02:00:00',
@@ -2830,11 +2837,15 @@ exports.globalDefaults = {
     weekNumbers: false,
     weekNumberTitle: 'W',
     weekNumberCalculation: 'local',
-    // editable: false,
+    editable: true, //changed to true
     // nowIndicator: false,
-    scrollTime: '06:00:00',
-    minTime: '00:00:00',
-    maxTime: '24:00:00',
+    scrollTime: '00:00:00',
+    minTime: '08:00:00',
+    maxTime: '19:00:00',
+    //OWN EDIT
+    slotDuration: '00:30:00',
+    slotMinTime: '08:00:00',
+    slotMaxTime: '19:00:00',
     showNonCurrentDates: true,
     // event ajax
     lazyFetching: true,

@@ -65,18 +65,27 @@
         </div>
     </div>
     <div class="center-text mt-1">
-        <h2>ICalendar Link</h2>
+        <h1 style="color:red;">Erst lesen, dann Link!!</h1>
+        <h5>Dieser Link ist ein URL-Kalenderabonnement und sollte bei Google Calendar, Apple Calendar und alle Anderen als Import-per-URL eingepflegt werden.
+        NICHT die "username.calender.ics" herunterladen und "abonnieren", Ausfälle und Kurswahlen werden ansonsten nicht aktualisiert. Ihr müsst den Link selbst im Kalender abspeichern!</h5>
+        <h4><a href="https://yourical.de/faq"><u>Anleitung / FAQ</u></a></h4>
+        <h5>&darr; Dein Link &darr;</h5>
         <div class="my-3">
             <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">https://yourical.de/ical/{{ current_user.username }}</a>
         </div>
-        <h5>Dieser Link ist ein URL-Kalenderabonnement und kann bei Google Calendar, Apple Calendar und alle anderen per URL hinzugefügt werden.Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Änderungen verpasst. Der Link ändert sich dabei nicht!</h5>
-        <h2>&ShortDownArrow;  &ShortDownArrow; F5 um Termine anzuzeigen &ShortDownArrow;  &ShortDownArrow;</h2>
+        <h5>Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Ausfälle verpasst. <br>
+        Der Link bleibt gleich.</h5>
     </div>
     
     <div id="ics-feeds"></div>
     <div id='calendar' data-username="{{ current_user.username }}" style="margin:20px;"></div>
     <div class="box-tip">
         <div id="legend-feeds"></div>
+    </div>
+    <div style="text-align: center;"> 
+    <h1>Tip for running the server and maybe a coffe <3</h1>
+    <img src="static/images/kleine_spende.gif" alt="Kleine Spende">
+    <h1><a href="https://paypal.me/silfeu"><u>paypal.me/silfeu</u></a>(externer Link)</h1>
     </div>
 {% endblock %}
 

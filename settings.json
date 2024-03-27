@@ -6,5 +6,7 @@
     "untis_password": "",
     "untis_server": "hepta.webuntis.com",
     "untis_school": "HS-Albstadt",
-    "untis_useragent": "WebUntis Test"
+    "untis_useragent": "WebUntis Test",
+    "login_logfile": "logs/login_log.txt",
+    "request_logfile": "logs/request_log.txt"
 }

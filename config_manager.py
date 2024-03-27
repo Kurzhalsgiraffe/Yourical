@@ -7,6 +7,8 @@ class Config:
             "database_uri": "sqlite:///database.db",
             "database_path": "instance/database.db",
             "encryption_secret_key": "obgt5cDzktDQNZA5dg49Lg/374/o4ZGX5rOY2N/9y0RzC72Y97NdYQ2I5fGjCCO9rIh6dLZ68v1CHQMtunhW2DtvrpDqLYELogKU",
+            "login_logfile": "logs/login_log.txt",
+            "request_logfile": "logs/request_log.txt",
             "untis_username": "ITS1",
             "untis_password": "",
             "untis_server": "hepta.webuntis.com",

@@ -1,0 +1,10 @@
+- Sia Kalender zur Auswahl anbieten oder am besten reinschmuggeln, a small price to pay for Salvation.
+- Sigmaringen mit einbinden. 
+- Kliem VDI-Kalender zur Auswahl. 
+- Datenbank backup cronjob.
+- Docker.
+- Sqlite Autoclean via last-login Eintrag in Datenbank. 
+- Klausuren irgendwie einpflegen.
+
+- disable animation slider
+- FAQ Link auf dashboard
