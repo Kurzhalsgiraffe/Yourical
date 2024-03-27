@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
-from talisman import Talisman
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import json
@@ -237,6 +236,5 @@ def log_login(user):
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    #app.run(debug=True, host="0.0.0.0", port=443, ssl_context=('ssl/certificate.crt', 'ssl/privatekey.key'))
     #app.run(host="127.0.0.1")
     app.run(host="127.0.0.1", debug=True)

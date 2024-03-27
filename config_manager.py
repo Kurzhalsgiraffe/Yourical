@@ -1,4 +1,5 @@
 import json
+import os
 
 class Config:
     def __init__(self, config_file:str) -> None:
@@ -15,12 +16,23 @@ class Config:
             "untis_school": "HS-Albstadt",
             "untis_useragent": "WebUntis Test"
         }
+        self.ensure_config_exists()
+
+    def ensure_config_exists(self):
+        try:
+            with open(self.config_file, 'r', encoding="utf-8") as file:
+                json.load(file)
+        except (json.JSONDecodeError, FileNotFoundError, OSError):
+            self.write_config_file(self.defaults)
 
     def read_config_file(self):
         """Read in the JSON config file"""
-        with open(self.config_file, 'r', encoding="utf-8") as file:
-            config = json.load(file)
-        return config
+        try:
+            with open(self.config_file, 'r', encoding="utf-8") as file:
+                config = json.load(file)
+            return config
+        except (json.JSONDecodeError, FileNotFoundError, OSError):
+            return self.defaults
 
     def write_config_file(self, config) -> None:
         """Write to the JSON config file"""
@@ -32,10 +44,6 @@ class Config:
         config = self.read_config_file()
         if key in config:
             return config[key]
-        elif key in self.defaults:
-            value = self.defaults[key]
-            self.update_config(key, value)
-            return value
         return None
 
     def update_config(self, key:str, value) -> None:
