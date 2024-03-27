@@ -37,7 +37,7 @@ def create_ical(events:list[dict]):
             event_obj.add('summary', event['name'])
         event_obj.add('dtstart', event['start'])
         event_obj.add('dtend', event['end'])
-        event_obj.add('location', event['rooms'])
+        event_obj.add('location', list(event['rooms']))
         event_obj.add('tzid', 'Europe/Paris')
         cal.add_component(event_obj)
 
