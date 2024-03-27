@@ -1,9 +1,0 @@
-manches war etwas schwierig zu lesen farbweise aber ich bin auch etwas farbenblind 
-und eure seite hat genau die farben die ich nicht gut sehe also bin das wahrscheinlich nur ich 
-##
-register login redirect funktioniert nicht auf edge windows 10 bei einem user.
-##
-ich hab meine Registirerungsdaten hier einige male eingegeben und mich gewundert warum nichts passiert. 
-dann wenn man eine Auswahl von fächern gemacht hat lässt sich keine neue Auswahl machen, 
-also es wäre schön wenn man seine Auswahl auch dort resetten kann.
-##
