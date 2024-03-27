@@ -63,4 +63,5 @@ def get_events_from_modules(modules:list[str], semesters:list[str], start_date:d
                                         'rooms': [i.name for i in period.rooms],
                                         'status': period.code
                                     })
+    events = [dict(t) for t in {tuple(d.items()) for d in events}]
     return events
