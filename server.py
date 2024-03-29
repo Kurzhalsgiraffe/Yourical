@@ -221,6 +221,4 @@ def serve_file(user):
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    script_thread = Thread(target=manager.calendar_updater) # TODO: Warum läuft der zweimal
-    script_thread.start()
     app.run(host="127.0.0.1", debug=True)
