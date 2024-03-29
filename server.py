@@ -51,7 +51,7 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
     submit = SubmitField('Login')
 
-# ------ Page Routes  ------ 
+# ------ Page Routes  ------
 
 @app.route('/')
 def index():

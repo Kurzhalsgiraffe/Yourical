@@ -72,21 +72,17 @@ class IcalManager:
         while True:
             self.calendar_updater_status = "running"
             events = self.get_all_events_from_database(user=None)
-            for name in events:
-                ical_data = self.create_ical(events[name])
-                with open(f'calendars/{name}.calendar.ics', 'wb') as f:
-                    f.write(ical_data)
+            for user in events:
+                self.create_ical(user, events[user])
 
             self.calendar_updater_status = "waiting"
             time.sleep(self.config.get_config("seconds_between_calendar_updates"))
 
     def generate_single_ical(self, user):
         event = self.get_all_events_from_database(user=user)
-        ical_data = self.create_ical(event[user])
-        with open(f'calendars/{user}.calendar.ics', 'wb') as file:
-            file.write(ical_data)
+        ical_data = self.create_ical(user, event[user])
 
-    def create_ical(self, events:list[dict]):
+    def create_ical(self, user, events:list[dict]):
         timezone = Timezone()
         timezone.add('TZID', 'Europe/Paris')
 
@@ -118,7 +114,11 @@ class IcalManager:
             event_obj.add('location', list(event['rooms']))
             event_obj.add('tzid', 'Europe/Paris')
             cal.add_component(event_obj)
-        return cal.to_ical()
+
+        ical_data =  cal.to_ical()
+        with open(f'calendars/{user}.calendar.ics', 'wb') as f:
+            f.write(ical_data)
+        self.log_ical_update(user)
 
     def get_all_events_from_database(self, user=None): # TODO WArum macht der Fehler?
         dbfile = self.config.get_config("database_path")
@@ -240,6 +240,11 @@ class IcalManager:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         with open(self.config.get_config("ical_logfile"), "a") as log_file:
             log_file.write(f"{timestamp}: '{ip_address}' requested calendar for '{user}'\n")
+
+    def log_ical_update(self, user):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        with open(self.config.get_config("ical_logfile"), "a") as log_file:
+            log_file.write(f"{timestamp}: updated/created calendar for '{user}'\n")
 
     def log_login(self, user):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
