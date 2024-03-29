@@ -2,11 +2,11 @@ import ical_manager
 import json
 from datetime import datetime
 from flask import Flask, flash, jsonify, render_template, request, send_from_directory, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
-from threading import Thread
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
+from flask_apscheduler import APScheduler
+from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 
@@ -15,6 +15,11 @@ manager = ical_manager.IcalManager(config_file="settings.json")
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")
 app.config['SECRET_KEY'] = manager.config.get_config("encryption_secret_key")
+
+scheduler = APScheduler()
+scheduler.api_enabled = True
+scheduler.init_app(app)
+scheduler.start()
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -117,7 +122,7 @@ def register():
 
     return render_template('register.html', form=form)
 
-# ------ Functional Routes  ------ 
+# ------ Functional Routes  ------
 
 @app.route('/get_semester_list')
 def get_semester_list():
@@ -218,7 +223,13 @@ def serve_file(user):
     except FileNotFoundError:
         return "file not found", 404
 
+# ------ Scheduler  ------
+
+@scheduler.task('interval', id='do_job_1', seconds=30, misfire_grace_time=900)
+def job1():
+    print('Job 1 executed')
+
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", debug=True)
+    app.run(host="127.0.0.1")

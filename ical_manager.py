@@ -80,7 +80,7 @@ class IcalManager:
 
     def generate_single_ical(self, user):
         event = self.get_all_events_from_database(user=user)
-        ical_data = self.create_ical(user, event[user])
+        self.create_ical(user, event[user])
 
     def create_ical(self, user, events:list[dict]):
         timezone = Timezone()
