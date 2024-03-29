@@ -66,17 +66,11 @@ class Config:
 class IcalManager:
     def __init__(self, config_file:str) -> None:
         self.config = Config(config_file=config_file)
-        self.calendar_updater_status = "waiting"
 
-    def calendar_updater(self):
-        while True:
-            self.calendar_updater_status = "running"
-            events = self.get_all_events_from_database(user=None)
-            for user in events:
-                self.create_ical(user, events[user])
-
-            self.calendar_updater_status = "waiting"
-            time.sleep(self.config.get_config("seconds_between_calendar_updates"))
+    def generate_all_icals(self):
+        events = self.get_all_events_from_database(user=None)
+        for user in events:
+            self.create_ical(user, events[user])
 
     def generate_single_ical(self, user):
         event = self.get_all_events_from_database(user=user)

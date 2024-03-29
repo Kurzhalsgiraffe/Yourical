@@ -225,11 +225,11 @@ def serve_file(user):
 
 # ------ Scheduler  ------
 
-@scheduler.task('interval', id='do_job_1', seconds=30, misfire_grace_time=900)
+@scheduler.task('interval', id='do_job_1', seconds=manager.config.get_config("seconds_between_calendar_updates"), misfire_grace_time=900)
 def job1():
-    print('Job 1 executed')
+    manager.generate_all_icals()
 
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1")
+    app.run(host="127.0.0.1", debug=True)
