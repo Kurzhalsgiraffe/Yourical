@@ -1,23 +1,20 @@
+import ical_manager
+import json
 from datetime import datetime
 from flask import Flask, flash, jsonify, render_template, request, send_from_directory, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from flask_bcrypt import Bcrypt
+from threading import Thread
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
-import json
-import untis
-import config_manager
-import generate_icals
 
-config = config_manager.Config("settings.json")
+manager = ical_manager.IcalManager(config_file="settings.json")
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = config.get_config("database_uri")
-app.config['SECRET_KEY'] = config.get_config("encryption_secret_key")
-
-#talisman = Talisman(app, force_https=True)
+app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")
+app.config['SECRET_KEY'] = manager.config.get_config("encryption_secret_key")
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -83,7 +80,7 @@ def login():
             if user:
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     login_user(user)
-                    log_login(user.username)
+                    manager.log_login(user.username)
                     return redirect(url_for('dashboard'))
                 else:
                     flash('Incorrect password. Please try again.', 'error')
@@ -111,7 +108,7 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                schoolyear = untis.get_current_schoolyear()
+                schoolyear = manager.get_current_schoolyear_from_untis()
                 new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"])
                 db.session.add(new_user)
                 db.session.commit()
@@ -124,7 +121,7 @@ def register():
 
 @app.route('/get_semester_list')
 def get_semester_list():
-    all_semesters = untis.get_all_semesters()
+    all_semesters = manager.get_all_semesters_from_untis()
     if current_user.semesters:
         selection = json.loads(current_user.semesters)
         for i in all_semesters:
@@ -151,7 +148,7 @@ def get_module_list():
         semesters = json.loads(current_user.semesters)
         start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
         end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
-        all_modules = untis.get_all_modules_of_semesters(semesters=semesters, start_date=start_date, end_date=end_date)
+        all_modules = manager.get_all_modules_of_semesters_from_untis(semesters=semesters, start_date=start_date, end_date=end_date)
 
         if current_user.modules:
             selection = json.loads(current_user.modules)
@@ -167,7 +164,7 @@ def process_module_selection():
     if current_user.is_authenticated:
         current_user.modules = json.dumps(selected_items)
         db.session.commit()
-        generate_icals.generate_icals(current_user.username)
+        manager.generate_single_ical(current_user.username)
         return jsonify({"message": "Selection saved"}), 200
     else:
         print("User is not authenticated")
@@ -179,7 +176,7 @@ def set_date():
     start_date_str = request.form.get('startDateInput')
     end_date_str = request.form.get('endDateInput')
 
-    schoolyear = untis.get_current_schoolyear()
+    schoolyear = manager.get_current_schoolyear_from_untis()
     min_start_date_str = schoolyear["start_date"]
     max_end_date_str = schoolyear["end_date"]
 
@@ -200,7 +197,7 @@ def get_date():
 @app.route('/reset_date', methods=['POST'])
 @login_required
 def reset_date():
-    schoolyear = untis.get_current_schoolyear()
+    schoolyear = manager.get_current_schoolyear_from_untis()
     min_start_date_str = schoolyear["start_date"]
     max_end_date_str = schoolyear["end_date"]
 
@@ -216,25 +213,14 @@ def serve_file(user):
     directory = 'calendars'
     try:
         ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
-        log_request(ip_address, user)
+        manager.log_ical_request(ip_address, user)
         return send_from_directory(directory, f"{user}.calendar.ics")
     except FileNotFoundError:
         return "file not found", 404
 
-# ------ Methods  ------ 
-
-def log_request(ip_address, user):
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(config.get_config("request_logfile"), 'a') as log_file:
-        log_file.write(f"Timestamp: {timestamp}, IP Address: {ip_address}, User: {user}\n")
-
-def log_login(user):
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(config.get_config("login_logfile"), 'a') as log_file:
-        log_file.write(f"Login:     Timestamp: {timestamp}, User: {user}\n")
-
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    #app.run(host="127.0.0.1")
+    script_thread = Thread(target=manager.calendar_updater) # TODO: Warum läuft der zweimal
+    script_thread.start()
     app.run(host="127.0.0.1", debug=True)

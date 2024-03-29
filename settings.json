@@ -8,5 +8,6 @@
     "untis_password": "",
     "untis_server": "hepta.webuntis.com",
     "untis_school": "HS-Albstadt",
-    "untis_useragent": "WebUntis Test"
+    "untis_useragent": "WebUntis Test",
+    "seconds_between_calendar_updates": 1800
 }
