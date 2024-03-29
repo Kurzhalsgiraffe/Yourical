@@ -206,7 +206,7 @@ def reset_date():
     db.session.commit()
     return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
 
-# ------ Download Routes  ------ 
+# ------ Download Routes  ------
 
 @app.route('/ical/<user>')
 def serve_file(user):
@@ -223,4 +223,4 @@ def serve_file(user):
 if __name__ == "__main__":
     script_thread = Thread(target=manager.calendar_updater) # TODO: Warum läuft der zweimal
     script_thread.start()
-    app.run(host="127.0.0.1")
+    app.run(host="127.0.0.1", debug=True)

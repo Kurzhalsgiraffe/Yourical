@@ -81,7 +81,7 @@ class IcalManager:
             time.sleep(self.config.get_config("seconds_between_calendar_updates"))
 
     def generate_single_ical(self, user):
-        event = self.get_all_events_from_database(user=user)[0]
+        event = self.get_all_events_from_database(user=user)
         ical_data = self.create_ical(event[user])
         with open(f'calendars/{user}.calendar.ics', 'wb') as file:
             file.write(ical_data)
@@ -119,7 +119,7 @@ class IcalManager:
             event_obj.add('tzid', 'Europe/Paris')
             cal.add_component(event_obj)
         return cal.to_ical()
-    
+
     def get_all_events_from_database(self, user=None): # TODO WArum macht der Fehler?
         dbfile = self.config.get_config("database_path")
         events = dict()
@@ -127,6 +127,7 @@ class IcalManager:
             conn = sqlite3.connect(dbfile, check_same_thread=False)
             cursor = conn.cursor()
 
+            data = []
             if user:
                 sql = "SELECT username, semesters, modules, start_date, end_date FROM user WHERE username=?"
                 data = cursor.execute(sql,(user,)).fetchall()
@@ -159,7 +160,7 @@ class IcalManager:
             print(err, traceback.format_exc())
 
 # ---------- UNTIS ----------
-            
+
     def get_untis_session(self):
         untis_username = self.config.get_config("untis_username")
         untis_password = self.config.get_config("untis_password")
@@ -182,7 +183,7 @@ class IcalManager:
             for semester_id, klasse in enumerate(sorted_semesters):
                 semesters.append({"id": str(semester_id), "name": klasse.name})
         return semesters
-        
+
     def get_all_modules_of_semesters_from_untis(self, semesters:list[str], start_date:datetime, end_date:datetime) -> set:
         modules = []
         _set = set()
@@ -205,22 +206,32 @@ class IcalManager:
         processed = set()
         with self.get_untis_session().login() as session:
             for sem in semesters:
-                klasse = session.klassen().filter(name=sem)[0]
+                klasse = session.klassen().filter(name=sem)
+                if not klasse:
+                    print(f"No class found for semester {sem}")
+                    continue
+                klasse = klasse[0]
                 table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
                 for _, row in table:
                     for _, periods in row:
                         if periods:
                             for period in periods:
                                 for subject in period.subjects:
-                                    if subject.long_name in modules and subject.long_name not in processed:
+                                    if subject.long_name in modules:
+                                        rooms = []
+                                        try:
+                                            rooms = [i.name for i in period.rooms]
+                                        except IndexError: # For some unknown reason, period.rooms is not found sometimes (correlates with "ro": {"id": 0}) --> Dirty fix: catch it and dont care about the room
+                                            rooms = ["None"]
                                         events.append({
                                             'name': subject.long_name,
-                                            'start': period.start,
-                                            'end': period.end,
-                                            'rooms': [i.name for i in period.rooms],
-                                            'status': period.code
+                                            'start': period.start if hasattr(period, 'start') else None,
+                                            'end': period.end if hasattr(period, 'end') else None,
+                                            'rooms': tuple(rooms),
+                                            'status': period.code if hasattr(period, 'code') else None
                                         })
                                         processed.add(subject.long_name)
+        events = [dict(t) for t in {tuple(d.items()) for d in events}]
         return events
 
 # ---------- LOG ----------
