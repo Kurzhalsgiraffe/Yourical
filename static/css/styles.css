@@ -236,6 +236,14 @@ form#moduleItemForm button {
   display: inline-block;
 }
 
+.box-tip {
+  margin-top: 10px;
+  border-radius: 3px;
+  border-color: LightSkyBlue;
+  border-width: 2px;
+  border-style: solid;
+}
+
 .faq-container {
   max-width: 1000px;
   margin: 0 auto;

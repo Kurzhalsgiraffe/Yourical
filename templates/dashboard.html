@@ -77,11 +77,15 @@
         Der Link bleibt gleich.</h5>
     </div>
 
+    <div id="ics-feeds"></div>
     <div id='calendar' data-username="{{ current_user.username }}"></div>
-    <div class="center-text">
-        <h1>Tip for running the server and maybe a coffe <3</h1>
-        <img src="static/images/kleine_spende.gif" alt="Kleine Spende">
-        <h1><a href="https://paypal.me/silfeu"><u>paypal.me/silfeu</u></a>(externer Link)</h1>
+    <div class="box-tip">
+        <div id="legend-feeds"></div>
+    </div>
+    <div style="text-align: center;">
+    <h1>Tip for running the server and maybe a coffe <3</h1>
+    <img src="static/images/kleine_spende.gif" alt="Kleine Spende">
+    <h1><a href="https://paypal.me/silfeu"><u>paypal.me/silfeu</u></a>(externer Link)</h1>
     </div>
 {% endblock %}
 
@@ -89,11 +93,12 @@
     <script src="{{ url_for('static', filename='js/dashboard.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/copy.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/moment.min.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/fullcalendar.min.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/locale-all.js') }}" type="application/javascript"></script>
-    <!-- <script src="{{ url_for('static', filename='js/ical.min.js') }}" type="application/javascript"></script>  -->
+    <script src="{{ url_for('static', filename='js/ical.min.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/ical_events.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/ical_fullcalendar.js') }}" type="application/javascript"></script>
-    <!-- <script src="{{ url_for('static', filename='js/jquery.qtip.min.js') }}" type="application/javascript"></script> -->
+    <script src="{{ url_for('static', filename='js/jquery.qtip.min.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static',filename='js/custom_display.js')}}" type="application/javascript"></script>
 {% endblock %}
