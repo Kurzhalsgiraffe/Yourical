@@ -1,4 +1,4 @@
-window.addEventListener('scroll', meineScrollFunktion, { passive: true });
+window.addEventListener('scroll', null, { passive: true });
 
 function fetchSemesterListItems() {
     $.get("/get_semester_list", function (data) {
