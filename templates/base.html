@@ -16,7 +16,7 @@
 
 <body>
     <div class="user">
-        <div class="user-content">
+        <div class="user-content px-3">
             {% if current_user.is_authenticated %}
             <div>
                 <a href="{{ url_for('logout') }}">Logout</a>
@@ -32,12 +32,12 @@
         </div>
     </div>
 
-    <div class="wrapper">
+    <div class="wrapper px-3">
         {% block content %}{% endblock %}
     </div>
 
     <footer class="footer mt-4">
-        <div class="footer-content">
+        <div class="footer-content px-3">
             <div class="logo">
                 <a href="{{ url_for('index') }}">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
