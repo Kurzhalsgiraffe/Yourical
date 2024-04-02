@@ -77,23 +77,10 @@ class IcalManager:
         self.create_ical(user, event[user])
 
     def create_ical(self, user, events:list[dict]):
+        cal = Calendar()
+
         timezone = Timezone()
         timezone.add('TZID', 'Europe/Paris')
-
-        standard_time = Timezone()
-        standard_time.add('DTSTART', datetime(1970, 1, 1, 0, 0, 0))
-        standard_time.add('TZOFFSETTO', timedelta(hours=1))  # Offset von UTC
-        standard_time.add('TZOFFSETFROM', timedelta(hours=0))  # Offset zu UTC
-
-        daylight_time = Timezone()
-        daylight_time.add('DTSTART', datetime(1970, 1, 1, 0, 0, 0))
-        daylight_time.add('TZOFFSETTO', timedelta(hours=2))  # Offset von UTC
-        daylight_time.add('TZOFFSETFROM', timedelta(hours=1))  # Offset zu UTC
-        daylight_time.add('RRULE', {'FREQ': 'YEARLY', 'BYMONTH': 3, 'BYDAY': '-1SU', 'TZOFFSETFROM': timedelta(hours=1), 'TZOFFSETTO': timedelta(hours=2)})  # Sommerzeitregel
-
-        timezone.add_component(standard_time)
-        timezone.add_component(daylight_time)
-        cal = Calendar()
         cal.add('X-WR-TIMEZONE', 'Europe/Paris')
         cal.add_component(timezone)
 
@@ -106,7 +93,6 @@ class IcalManager:
             event_obj.add('dtstart', event['start'])
             event_obj.add('dtend', event['end'])
             event_obj.add('location', list(event['rooms']))
-            event_obj.add('tzid', 'Europe/Paris')
             cal.add_component(event_obj)
 
         ical_data =  cal.to_ical()
@@ -114,7 +100,7 @@ class IcalManager:
             f.write(ical_data)
         self.log_ical_update(user)
 
-    def get_all_events_from_database(self, user=None): # TODO WArum macht der Fehler?
+    def get_all_events_from_database(self, user=None):
         dbfile = self.config.get_config("database_path")
         events = dict()
         try:
