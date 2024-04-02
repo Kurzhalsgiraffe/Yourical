@@ -3,10 +3,6 @@ window.addEventListener('scroll', null, { passive: true });
 function fetchSemesterListItems() {
     $.get("/get_semester_list", function (data) {
         updateSemesterListItems(data);
-
-        $(window).resize(function () {
-            updateSemesterListItems(data);
-        });
     });
 }
 
@@ -46,10 +42,6 @@ function submitSemesterForm() {
 function fetchModuleListItems() {
     $.get("/get_module_list", function (data) {
         updateModuleListItems(data);
-
-        $(window).resize(function () {
-            updateModuleListItems(data);
-        });
     });
 }
 
@@ -107,6 +99,7 @@ function copyLink(event) {
 $(document).ready(function () {
     fetchSemesterListItems();
     fetchModuleListItems();
+
     $("#semesterItemForm").submit(submitSemesterForm);
     $("#moduleItemForm").submit(submitModuleForm);
     $("#dateForm").submit(submitDateForm);
