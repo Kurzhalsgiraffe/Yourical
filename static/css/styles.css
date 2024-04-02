@@ -247,3 +247,13 @@ form#moduleItemForm button {
   line-height: 1.5; /* Adjust line height as needed */
   margin-bottom: 20px; /* Adjust as needed */
 }
+
+.link {
+  text-decoration: solid;
+  color: palevioletred;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: #b66f81;
+}

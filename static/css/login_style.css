@@ -63,7 +63,7 @@ color: white;
     letter-spacing: 4px;
     background: var(--color4);
   }
-  
+
   .login-box form #submit:hover {
     background: var(--color4);
     color: #fff;
@@ -73,8 +73,7 @@ color: white;
                 0 0 50px var(--color-bg1),
                 0 0 100px var(--color-bg1);
   }
-  
+
   .login-box a {
     color: palevioletred;
   }
-  

@@ -69,11 +69,23 @@ def dashboard():
 
 @app.route('/faq', methods=['GET'])
 def faq():
-    return render_template('faq.html', current_user=current_user)
+    return render_template('faq/faq.html')
+
+@app.route('/faq/google', methods=['GET'])
+def faq_google():
+    return render_template('faq/faq_google.html')
+
+@app.route('/faq/apple', methods=['GET'])
+def faq_apple():
+    return render_template('faq/faq_apple.html')
+
+@app.route('/faq/outlook', methods=['GET'])
+def faq_outlook():
+    return render_template('faq/faq_outlook.html')
 
 @app.route('/privacy_policy', methods=['GET'])
 def privacy_policy():
-    return render_template('privacy_policy.html', current_user=current_user)
+    return render_template('privacy_policy.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
