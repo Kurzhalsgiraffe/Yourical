@@ -1,3 +1,5 @@
+window.addEventListener('scroll', meineScrollFunktion, { passive: true });
+
 function fetchSemesterListItems() {
     $.get("/get_semester_list", function (data) {
         updateSemesterListItems(data);
@@ -111,7 +113,6 @@ $(document).ready(function () {
             $('#endDateInput').val(response.end_date);
         });
     });
-   
 
     $.get("/get_date", function(data) {
         $('#startDateInput').val(data.start_date);
