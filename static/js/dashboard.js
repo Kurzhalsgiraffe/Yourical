@@ -15,7 +15,7 @@ function updateSemesterListItems(data) {
     semesterItemTable.empty();
 
     var containerWidth = semesterItemTable.width();
-    var numColumns = Math.floor(containerWidth / 200); // Assuming each column width is 150px, adjust as needed
+    var numColumns = Math.floor(containerWidth / 200); // Assuming each column width is 200px, adjust as needed
 
     var currentRow;
     data.forEach(function (item, index) {
@@ -24,8 +24,10 @@ function updateSemesterListItems(data) {
             semesterItemTable.append(currentRow);
         }
 
-        var checked = item.selected ? "checked" : "";
-        currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"' + checked + '><label for="' + item.id + '">' + item.name + '</label></td>');
+        var checkbox = $('<input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '">');
+        checkbox.prop('checked', item.selected); // Restore original selection
+        var label = $('<label for="' + item.id + '">' + item.name + '</label>');
+        currentRow.append($('<td></td>').append(checkbox).append(label));
     });
 }
 
@@ -65,8 +67,10 @@ function updateModuleListItems(data) {
             moduleItemTable.append(currentRow);
         }
 
-        var checked = data[index].selected ? "checked" : "";
-        currentRow.append('<td><input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '"' + checked + '><label for="' + item.id + '">' + item.name + '</label></td>');
+        var checkbox = $('<input type="checkbox" id="' + item.id + '" name="selected_items" value="' + item.name + '">');
+        checkbox.prop('checked', item.selected); // Restore original selection
+        var label = $('<label for="' + item.id + '">' + item.name + '</label>');
+        currentRow.append($('<td></td>').append(checkbox).append(label));
     });
 }
 
