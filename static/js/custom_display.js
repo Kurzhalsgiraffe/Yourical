@@ -41,6 +41,11 @@ $(document).ready(function() {
         },
         defaultView: 'agendaWeek',
         firstDay: '1',
+        minTime: "08:00:00",
+        maxTime: "19:00:00",
+        slotDuration: '00:30:00',
+        height: 'auto',
+        hiddenDays: [0],
         locale: 'de',
         lang: 'de',
         views: {
