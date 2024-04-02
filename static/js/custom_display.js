@@ -26,28 +26,15 @@ function add_recur_events() {
     }
 }
 
-
 function load_ics(ics, cpt){
     data_req(ics.url, function(){
         $('#calendar').fullCalendar('addEventSource', fc_events(this.response, ics.event_properties))
         sources_to_load_cnt -= 1;
     })
-    // Meddling with the HTML to add everything related to our ics feeds dynamically
-    // hidden ics feeds
-    document.getElementById("ics-feeds").insertAdjacentHTML('beforeend', "<span hidden id='ics-url"+cpt+"'>"+ics.url+"</span>");
-
-    // calendar legend
-    document.getElementById("legend-feeds").insertAdjacentHTML('beforeend', "    <div class='calendar-feed'>" +
-        "<span class='fc-event-dot' style='background-color: "+ics.event_properties['color']+"'></span>" +
-        "<span> "+ics.title+" <button id='copyLink"+cpt+"'>" +
-        "<img src='static/images/clipboard.svg' alt='copy to clipboard' title='copy to clipboard' width='15px' style='padding-top: 3px;'/></button></span></div>");
-
-    // copy button for ics feeds
-    document.querySelector("#copyLink"+cpt).addEventListener("click", function(){copy("ics-url"+cpt);});
 }
 
 function load_events(){
-      $('#calendar').fullCalendar('removeEvents');  
+      $('#calendar').fullCalendar('removeEvents');
       // display events
       $('#calendar').fullCalendar({
           header: {
@@ -59,7 +46,7 @@ function load_events(){
           firstDay: '1',
           locale: 'de',
           lang: 'de',
-  
+
           // customize the button names,
           // otherwise they'd all just say "list"
           views: {
