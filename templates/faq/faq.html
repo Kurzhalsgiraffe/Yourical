@@ -9,7 +9,7 @@
         <h1>FAQ</h1>
         <p>Denk nach bevor du klickst, so schwer ist es nicht!</p>
 
-        <h3>Wie funktionert der Link?</h3>
+        <h3 class="mt-3 mb-2">Wie funktionert der Link?</h3>
         {% if current_user.is_authenticated %}
             <p>Der Link "{{ domain }}/ical/{{ current_user.username }}" beinhaltet die iCal-Datei (.ics).</p>
         {% else %}
@@ -21,24 +21,24 @@
         so wie andere Anbieter lassen eine Importierung per URL zu.
         Der Anbieter lädt dann die Datei für euch regelmäßig herunter und hält euren Kalender aktuell.</p>
 
-        <h3>Google Calendar</h3>
+        <h3 class="mt-3 mb-2">Google Calendar</h3>
         <p><a href="/faq/google" class="link">Wie füge ich den Kalender zu "Google Calendar" hinzu?</a></p>
 
-        <h3>Apple Calendar</h3>
+        <h3 class="mt-3 mb-2">Apple Calendar</h3>
         <p><a href="/faq/apple" class="link">Wie füge ich den Kalender zu "Apple Calendar" hinzu?</a></p>
 
-        <h3>Outlook Calendar</h3>
+        <h3 class="mt-3 mb-2">Outlook Calendar</h3>
         <p><a href="/faq/outlook" class="link">Wie füge ich den Kalender zu "Outlook Calendar" hinzu?</a></p>
 
-        <h3>Aktualisierungen / Vorlesungssausfälle</h3>
+        <h3 class="mt-3 mb-2">Aktualisierungen / Vorlesungssausfälle</h3>
         <p>Wir beziehen die Daten 2 mal pro Stunde aus dem WebUntis Kalender der Hochschule.
         Somit werden entfallene Stunden oder Verschiebungen auch direkt zu neuen Kalendern verarbeitet.
         Google bezieht die neuesten Termine leider nur alle 24h und daran können wir leider nichts ändern.</p>
 
-        <h3>Passwort Vergessen?</h3>
+        <h3 class="mt-3 mb-2">Passwort Vergessen?</h3>
         <p>Dumm gelaufen, können wir auch nicht ändern. Erstell einfach ein neues Profil. Falls du deinen alten Namen zurück haben möchtest, können wir dein altes Profil für dich löschen.</p>
 
-        <h3>Kann man euch verklagen?</h3>
+        <h3 class="mt-3 mb-2">Kann man euch verklagen?</h3>
         <p>Klar, du kannst es versuchen aber ich bin Student und außer Nudeln und Ketchup gibt's bei mir nichts zu holen.
     </div>
 {% endblock %}

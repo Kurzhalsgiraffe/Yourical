@@ -9,7 +9,11 @@ html, body {
     display: flex;
     flex-direction: column;
 }
-  
+
+p {
+  margin-bottom: 0;
+}
+
 .home-text-container {
   width: 100vw;
   height: 100vh;
@@ -243,9 +247,8 @@ form#moduleItemForm button {
 }
 
 .faq-container p {
-  font-size: 16px; /* Adjust as needed */
-  line-height: 1.5; /* Adjust line height as needed */
-  margin-bottom: 20px; /* Adjust as needed */
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .link {
