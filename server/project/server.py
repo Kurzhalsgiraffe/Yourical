@@ -11,7 +11,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 
-manager = ical_manager.IcalManager(config_file="settings.json")
+manager = ical_manager.IcalManager(config_file="config/settings.json")
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")

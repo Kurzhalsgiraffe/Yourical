@@ -7,5 +7,6 @@ services:
       - ./instance:/usr/src/app/project/instance
       - ./calendars:/usr/src/app/project/calendars
       - ./logs:/usr/src/app/project/logs
+      - ./config:/usr/src/app/project/config
     ports:
       - 5000:5000
