@@ -1,9 +1,8 @@
 import json
 import sqlite3
-import time
 import traceback
 import webuntis
-from datetime import datetime, timedelta
+from datetime import datetime
 from icalendar import Calendar, Event, Timezone
 
 class Config:
