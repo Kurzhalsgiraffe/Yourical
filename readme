@@ -4,4 +4,4 @@ cd Untis_to_ICal
 
 pip3 install -r requirements.txt
 
-sudo python3 server.py
+uwsgi --socket 0.0.0.0:5000 --enable-threads --protocol=http -w wsgi:app
