@@ -8,4 +8,4 @@ services:
       - ./calendars:/usr/src/app/project/calendars
       - ./logs:/usr/src/app/project/logs
     ports:
-      - 5001:5000
+      - 5000:5000

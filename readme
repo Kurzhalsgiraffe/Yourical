@@ -2,6 +2,6 @@ git clone https://github.com/Kurzhalsgiraffe/Untis_to_ICal
 
 cd Untis_to_ICal
 
-pip3 install -r requirements.txt
+docker compose build
 
-uwsgi --socket 0.0.0.0:5000 --enable-threads --protocol=http -w wsgi:app
+docker compose up -d
