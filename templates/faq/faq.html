@@ -10,8 +10,12 @@
         <p>Denk nach bevor du klickst, so schwer ist es nicht!</p>
 
         <h3>Wie funktionert der Link?</h3>
-        <p>Der Link yourical.de/ical/deinname beinhaltet die ical-Datei (.ics).
-        Es ist ein Download link und theoretisch kann die Datei manuell heruntergeladen werden und
+        {% if current_user.is_authenticated %}
+            <p>Der Link "{{ domain }}/ical/{{ current_user.username }}" beinhaltet die iCal-Datei (.ics).</p>
+        {% else %}
+            <p>Der Link "{{ domain }}/ical/username" beinhaltet die iCal-Datei (.ics).</p>
+        {% endif %}
+        <p>Es ist ein Download link und theoretisch kann die Datei manuell heruntergeladen werden und
         lokal betrachtet oder in einen Kalender importiert werden. Das ist aber nicht sinnvoll.
         Die einschlägigen Kalenderanbieter wie Google Calendar oder Apple Calendar
         so wie andere Anbieter lassen eine Importierung per URL zu.

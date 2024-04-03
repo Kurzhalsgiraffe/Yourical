@@ -1,7 +1,7 @@
 // Edit your ics sources here
 var username = document.getElementById('calendar').getAttribute('data-username');
 var ics_sources = [
-    {url: 'https://yourical.de/ical/' + username, title: 'custom calendar', event_properties: {color: 'DeepPurple'}}
+    {url: window.location.origin + '/ical/' + username, title: 'custom calendar', event_properties: {color: 'DeepPurple'}}
 ];
 
 function data_req(url, callback) {

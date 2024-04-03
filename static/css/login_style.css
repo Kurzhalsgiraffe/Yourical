@@ -21,14 +21,14 @@ color: white;
     box-shadow: 0 15px 25px rgba(0, 0, 0, .6);
     border-radius: 10px;
   }
-  
+
   .login-box h1 {
     margin: 0 0 30px;
     padding: 0;
     color: #fff;
     text-align: center;
   }
-  
+
   .login-box input[type="text"],
   .login-box input[type="password"] {
     width: 100%;
@@ -41,7 +41,7 @@ color: white;
     outline: none;
     background: transparent;
   }
-  
+
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus,
@@ -49,7 +49,7 @@ color: white;
       transition: background-color 5000s ease-in-out 0s;
       -webkit-text-fill-color: #fff !important;
   }
-  
+
   .login-box form #submit {
     display: inline-block;
     margin-top: 40px;

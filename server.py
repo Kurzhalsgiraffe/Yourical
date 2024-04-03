@@ -67,11 +67,13 @@ def index():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html', current_user=current_user)
+    domain = request.scheme + '://' + request.host
+    return render_template('dashboard.html', current_user=current_user, domain=domain)
 
 @app.route('/faq', methods=['GET'])
 def faq():
-    return render_template('faq/faq.html')
+    domain = request.scheme + '://' + request.host
+    return render_template('faq/faq.html', domain=domain)
 
 @app.route('/faq/google', methods=['GET'])
 def faq_google():

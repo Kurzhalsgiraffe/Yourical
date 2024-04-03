@@ -71,7 +71,7 @@
         <h4><a href="/faq" class="link">Anleitung / FAQ</a></h4>
         <h5>&darr; Dein Link &darr;</h5>
         <div class="my-3">
-            <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">https://yourical.de/ical/{{ current_user.username }}</a>
+            <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">{{ domain }}/ical/{{ current_user.username }}</a>
         </div>
         <h5>Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Ausfälle verpasst. <br>
         Der Link bleibt gleich.</h5>
