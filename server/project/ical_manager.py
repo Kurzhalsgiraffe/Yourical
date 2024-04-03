@@ -11,7 +11,7 @@ class Config:
         self.defaults = {
             "database_uri": "sqlite:///database.db",
             "database_path": "instance/database.db",
-            "encryption_secret_key": "obgt5cDzktDQNZA5dg49Lg/374/o4ZGX5rOY2N/9y0RzC72Y97NdYQ2I5fGjCCO9rIh6dLZ68v1CHQMtunhW2DtvrpDqLYELogKU",
+            "encryption_secret_key": "secret",
             "login_logfile": "logs/login_log.txt",
             "ical_logfile": "logs/ical_log.txt",
             "seconds_between_calendar_updates": 1800,
