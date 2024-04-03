@@ -2,9 +2,10 @@ import ical_manager
 import json
 from datetime import datetime
 from flask import Flask, flash, jsonify, render_template, request, send_from_directory, url_for, redirect
-from flask_bcrypt import Bcrypt
-from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_apscheduler import APScheduler
+from flask_bcrypt import Bcrypt
+from flask_cors import CORS
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -15,6 +16,7 @@ manager = ical_manager.IcalManager(config_file="settings.json")
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")
 app.config['SECRET_KEY'] = manager.config.get_config("encryption_secret_key")
+CORS(app)
 
 scheduler = APScheduler()
 scheduler.api_enabled = True
