@@ -65,6 +65,7 @@ class Config:
 class IcalManager:
     def __init__(self, config_file:str) -> None:
         self.config = Config(config_file=config_file)
+        self.generate_all_icals()
 
     def generate_all_icals(self):
         events = self.get_all_events_from_database(user=None)
