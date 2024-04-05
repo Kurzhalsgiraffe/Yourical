@@ -42,6 +42,7 @@ class User(db.Model, UserMixin):
     modules = db.Column(db.TEXT)
     start_date = db.Column(db.TEXT)
     end_date = db.Column(db.TEXT)
+    last_login = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -102,6 +103,7 @@ def login():
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     login_user(user)
                     manager.log_login(user.username)
+                    user.last_login = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     return redirect(url_for('dashboard'))
                 else:
                     flash('Incorrect password. Please try again.', 'error')
@@ -130,7 +132,7 @@ def register():
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
                 schoolyear = manager.get_current_schoolyear_from_untis()
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"])
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"], last_login="")
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Registration successful. You can now log in.', 'success')
