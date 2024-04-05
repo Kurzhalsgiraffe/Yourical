@@ -103,7 +103,8 @@ def login():
                 if bcrypt.check_password_hash(user.password, form.password.data):
                     login_user(user)
                     manager.log_login(user.username)
-                    user.last_login = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    current_user.last_login = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    db.session.commit()
                     return redirect(url_for('dashboard'))
                 else:
                     flash('Incorrect password. Please try again.', 'error')
