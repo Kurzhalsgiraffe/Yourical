@@ -40,8 +40,6 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     semesters = db.Column(db.TEXT)
     modules = db.Column(db.TEXT)
-    start_date = db.Column(db.TEXT)
-    end_date = db.Column(db.TEXT)
     last_login = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
@@ -132,8 +130,7 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                schoolyear = manager.untis_handler.get_current_schoolyear()
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"], last_login="")
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="")
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Registration successful. You can now log in.', 'success')
@@ -191,42 +188,6 @@ def process_module_selection():
     else:
         print("User is not authenticated")
         return jsonify({"message": "User is not authenticated"}), 401
-
-@app.route('/set_date', methods=['POST'])
-@login_required
-def set_date():
-    start_date_str = request.form.get('startDateInput')
-    end_date_str = request.form.get('endDateInput')
-
-    schoolyear = manager.untis_handler.get_current_schoolyear()
-    min_start_date_str = schoolyear["start_date"]
-    max_end_date_str = schoolyear["end_date"]
-
-    if datetime.strptime(start_date_str, "%Y-%m-%d") < datetime.strptime(min_start_date_str, "%Y-%m-%d"):
-        start_date_str = min_start_date_str
-    if datetime.strptime(end_date_str, "%Y-%m-%d") > datetime.strptime(max_end_date_str, "%Y-%m-%d"):
-        end_date_str = max_end_date_str
-
-    current_user.start_date = start_date_str
-    current_user.end_date = end_date_str
-    db.session.commit()
-    return jsonify({'start_date': start_date_str, 'end_date': end_date_str})
-
-@app.route('/get_date', methods=['GET'])
-def get_date():
-    return jsonify({'start_date': current_user.start_date, 'end_date': current_user.end_date})
-
-@app.route('/reset_date', methods=['POST'])
-@login_required
-def reset_date():
-    schoolyear = manager.untis_handler.get_current_schoolyear()
-    min_start_date_str = schoolyear["start_date"]
-    max_end_date_str = schoolyear["end_date"]
-
-    current_user.start_date = min_start_date_str
-    current_user.end_date = max_end_date_str
-    db.session.commit()
-    return jsonify({'start_date': min_start_date_str, 'end_date': max_end_date_str})
 
 # ------ Download Routes  ------
 

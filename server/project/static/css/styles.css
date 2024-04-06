@@ -99,25 +99,6 @@ form#moduleItemForm button {
   margin-top: 20px;
 }
 
-#dateForm input[type="date"] {
-  display: inline-block;
-  padding: 8px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  margin: 10px;
-}
-
-#dateForm {
-  margin-left: 20px;
-}
-
-#dateForm label {
-  font-size: 20px;
-  color: white;
-  vertical-align: middle;
-}
-
 .flex-container{
   display: flex;
   flex-direction: row;
