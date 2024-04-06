@@ -175,7 +175,7 @@ class IcalManager:
     def __init__(self, config_file:str, untis_file:str) -> None:
         self.config = Config(config_file=config_file)
         self.untis_handler = UntisHandler(save_file=untis_file, config=self.config)
-        #self.generate_all_icals() # TODO: Maybe nicht hier
+        self.generate_all_icals()
 
     def generate_all_icals(self):
         events = self.get_all_events_from_database(user=None)
