@@ -203,8 +203,10 @@ def serve_file(user):
 
 # ------ Scheduler  ------
 
-@scheduler.task('interval', id='do_job_1', seconds=manager.config.get_config("seconds_between_calendar_updates"), misfire_grace_time=900)
-def job1():
+@scheduler.task('interval', id='update_calendars', seconds=manager.config.get_config("seconds_between_calendar_updates"), misfire_grace_time=900)
+def update_calendars():
+    manager.untis_handler.update_schoolyear_from_untis()
+    manager.untis_handler.update_all_tables_from_untis()
     manager.generate_all_icals()
 
 ## ----- MAIN ----- ##
