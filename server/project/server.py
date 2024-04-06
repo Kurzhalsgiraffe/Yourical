@@ -11,7 +11,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 
-manager = ical_manager.IcalManager(config_file="config/settings.json")
+manager = ical_manager.IcalManager(config_file="config/settings.json", untis_file="instance/untis_data.json")
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")
@@ -132,7 +132,7 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                schoolyear = manager.get_current_schoolyear_from_untis()
+                schoolyear = manager.untis_handler.get_current_schoolyear()
                 new_user = User(username=username, password=hashed_password, semesters="", modules="", start_date=schoolyear["start_date"], end_date=schoolyear["end_date"], last_login="")
                 db.session.add(new_user)
                 db.session.commit()
@@ -145,12 +145,12 @@ def register():
 
 @app.route('/get_semester_list')
 def get_semester_list():
-    all_semesters = manager.get_all_semesters_from_untis()
+    semester_list = manager.untis_handler.get_all_semesters()
     if current_user.semesters:
         selection = json.loads(current_user.semesters)
-        for i in all_semesters:
+        for i in semester_list:
             i["selected"] = i["name"] in selection
-    return jsonify(all_semesters)
+    return jsonify(semester_list)
 
 @app.route('/process_semester_selection', methods=['POST'])
 @login_required
@@ -170,9 +170,7 @@ def get_module_list():
     all_modules = []
     if current_user.semesters:
         semesters = json.loads(current_user.semesters)
-        start_date = datetime.strptime(current_user.start_date, '%Y-%m-%d')
-        end_date = datetime.strptime(current_user.end_date, '%Y-%m-%d')
-        all_modules = manager.get_all_modules_of_semesters_from_untis(semesters=semesters, start_date=start_date, end_date=end_date)
+        all_modules = manager.untis_handler.get_module_list_of_semesters(semesters=semesters)
 
         if current_user.modules:
             selection = json.loads(current_user.modules)
@@ -200,7 +198,7 @@ def set_date():
     start_date_str = request.form.get('startDateInput')
     end_date_str = request.form.get('endDateInput')
 
-    schoolyear = manager.get_current_schoolyear_from_untis()
+    schoolyear = manager.untis_handler.get_current_schoolyear()
     min_start_date_str = schoolyear["start_date"]
     max_end_date_str = schoolyear["end_date"]
 
@@ -221,7 +219,7 @@ def get_date():
 @app.route('/reset_date', methods=['POST'])
 @login_required
 def reset_date():
-    schoolyear = manager.get_current_schoolyear_from_untis()
+    schoolyear = manager.untis_handler.get_current_schoolyear()
     min_start_date_str = schoolyear["start_date"]
     max_end_date_str = schoolyear["end_date"]
 

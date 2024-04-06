@@ -61,11 +61,121 @@ class Config:
         config[key] = value
         self.write_config_file(config)
 
+class UntisHandler:
+    def __init__(self, save_file:str, config:Config) -> None:
+        self.save_file = save_file
+        self.config = config
+        self.data = {}
+        self.ensure_untis_data_exists()
+
+    def ensure_untis_data_exists(self):
+        try:
+            with open(self.save_file, "r", encoding="utf-8") as file:
+                self.data = json.load(file)
+                if "schoolyear" not in self.data or "module_lists" not in self.data or "timetables" not in self.data:
+                    raise ValueError()
+        except (json.JSONDecodeError, FileNotFoundError, OSError, ValueError) as e:
+            self.update_schoolyear_from_untis()
+            self.update_all_tables_from_untis()
+
+    def save_as_json(self):
+        with open(self.save_file, "w", encoding="utf-8") as file:
+            json.dump(self.data, file, indent=4, ensure_ascii=False)
+
+# ---------- UNTIS API ----------
+
+    def get_untis_session(self):
+        untis_username = self.config.get_config("untis_username")
+        untis_password = self.config.get_config("untis_password")
+        untis_server = self.config.get_config("untis_server")
+        untis_school = self.config.get_config("untis_school")
+        untis_useragent = self.config.get_config("untis_useragent")
+        return webuntis.Session(username=untis_username, password=untis_password, server=untis_server, school=untis_school, useragent=untis_useragent)
+
+    def update_schoolyear_from_untis(self):
+        with self.get_untis_session().login() as session:
+            schoolyear = session.schoolyears().current
+            self.data["schoolyear"] = {"start_date": schoolyear.start.strftime("%Y-%m-%d"), "end_date": schoolyear.end.strftime("%Y-%m-%d")}
+        self.save_as_json()
+
+    def update_all_tables_from_untis(self):
+        schoolyear = self.get_current_schoolyear()
+        start_date = datetime.strptime(schoolyear["start_date"], "%Y-%m-%d")
+        end_date = datetime.strptime(schoolyear["end_date"], "%Y-%m-%d")
+
+        semesters = []
+        self.data["module_lists"] = dict()
+        self.data["timetables"] = dict()
+
+        with self.get_untis_session().login() as session:
+            for klasse in session.klassen():
+                semesters.append(klasse.name)
+                module_list = set()
+                timetable = []
+                table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
+                for _, row in table:
+                    for _, periods in row:
+                        if periods:
+                            for period in periods:
+                                for subject in period.subjects:
+                                    module_list.add(subject.long_name)
+                                    rooms = []
+                                    try:
+                                        rooms = [i.name for i in period.rooms]
+                                    except IndexError: # For some unknown reason, period.rooms is not found sometimes (correlates with "ro": {"id": 0}) --> Dirty fix: catch it and dont care about the room
+                                        rooms = ["None"]
+                                    timetable.append({
+                                        'name': subject.long_name,
+                                        'start': period.start.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'start') else None,
+                                        'end': period.end.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'end') else None,
+                                        'rooms': rooms,
+                                        'status': period.code if hasattr(period, 'code') else None
+                                    })
+                self.data["module_lists"][klasse.name] = list(module_list)
+                self.data["timetables"][klasse.name] = timetable
+            self.data["semesters"] = sorted(semesters)
+        self.save_as_json()
+
+# ---------- ACCESS METHODS ----------
+
+    def get_current_schoolyear(self):
+        schoolyear = self.data.get("schoolyear")
+        return schoolyear
+
+    def get_all_semesters(self):
+        semester_list = []
+        semesters = self.data.get("semesters")
+        for semester_id, semester_name in enumerate(semesters):
+            semester_list.append({"id": str(semester_id), "name": semester_name})
+        return semester_list
+
+    def get_module_list_of_semesters(self, semesters:str):
+        _set = set()
+        modules = []
+        module_lists = self.data.get("module_lists")
+        for sem in semesters:
+            _set.update(module_lists.get(sem))
+        for module_id, module_name in enumerate(sorted(list(_set))):
+            modules.append({"id": str(module_id), "name": module_name})
+        return modules
+
+    def get_events_from_modules(self, semesters:list[str], modules:list[str]):
+        events = []
+        timetables = self.data.get("timetables")
+        for sem in semesters:
+            for event in timetables.get(sem):
+                if event:
+                    if event.get("name") in modules:
+                        event["rooms"] = tuple(event["rooms"])
+                        events.append(event)
+        events = [dict(t) for t in {tuple(d.items()) for d in events}]
+        return events
 
 class IcalManager:
-    def __init__(self, config_file:str) -> None:
+    def __init__(self, config_file:str, untis_file:str) -> None:
         self.config = Config(config_file=config_file)
-        self.generate_all_icals()
+        self.untis_handler = UntisHandler(save_file=untis_file, config=self.config)
+        #self.generate_all_icals() # TODO: Maybe nicht hier
 
     def generate_all_icals(self):
         events = self.get_all_events_from_database(user=None)
@@ -90,8 +200,8 @@ class IcalManager:
                 event_obj.add('summary', f"ENTFÄLLT: {event['name']}")
             else:
                 event_obj.add('summary', event['name'])
-            event_obj.add('dtstart', event['start'])
-            event_obj.add('dtend', event['end'])
+            event_obj.add('dtstart', datetime.strptime(event['start'], '%Y-%m-%d %H:%M:%S'))
+            event_obj.add('dtend', datetime.strptime(event['end'], '%Y-%m-%d %H:%M:%S'))
             event_obj.add('location', list(event['rooms']))
             cal.add_component(event_obj)
 
@@ -109,10 +219,10 @@ class IcalManager:
 
             data = []
             if user:
-                sql = "SELECT username, semesters, modules, start_date, end_date FROM user WHERE username=?"
+                sql = "SELECT username, semesters, modules FROM user WHERE username=?"
                 data = cursor.execute(sql,(user,)).fetchall()
             else:
-                sql = "SELECT username, semesters, modules, start_date, end_date FROM user"
+                sql = "SELECT username, semesters, modules FROM user"
                 data = cursor.execute(sql).fetchall()
             conn.close()
 
@@ -122,97 +232,18 @@ class IcalManager:
                         username = entry[0]
                         semesters_json = entry[1]
                         modules_json = entry[2]
-                        start_date_str = entry[3]
-                        end_date_str = entry[4]
 
                         if semesters_json and modules_json:
                             modules = json.loads(modules_json)
                             semesters = json.loads(semesters_json)
-                            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
-                            end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
 
-                            events[username] = self.get_events_from_modules(modules=modules, semesters=semesters, start_date=start_date, end_date=end_date)
+                            events[username] = self.untis_handler.get_events_from_modules(semesters=semesters, modules=modules)
                     except json.JSONDecodeError as json_err:
                         print(f"Error parsing JSON for user {username}: {json_err}")
             return events
 
         except sqlite3.Error as err:
             print(err, traceback.format_exc())
-
-# ---------- UNTIS ----------
-
-    def get_untis_session(self):
-        untis_username = self.config.get_config("untis_username")
-        untis_password = self.config.get_config("untis_password")
-        untis_server = self.config.get_config("untis_server")
-        untis_school = self.config.get_config("untis_school")
-        untis_useragent = self.config.get_config("untis_useragent")
-        return webuntis.Session(username=untis_username, password=untis_password, server=untis_server, school=untis_school, useragent=untis_useragent)
-
-    def get_current_schoolyear_from_untis(self):
-        with self.get_untis_session().login() as session:
-            start_date = session.schoolyears().current.start
-            end_date = session.schoolyears().current.end
-            return {'start_date': start_date.strftime('%Y-%m-%d'), 'end_date': end_date.strftime('%Y-%m-%d')}
-
-    def get_all_semesters_from_untis(self) -> list[dict]:
-        semesters = []
-        with self.get_untis_session().login() as session:
-            sorted_semesters = sorted(session.klassen(), key=lambda klasse: klasse.name)
-
-            for semester_id, klasse in enumerate(sorted_semesters):
-                semesters.append({"id": str(semester_id), "name": klasse.name})
-        return semesters
-
-    def get_all_modules_of_semesters_from_untis(self, semesters:list[str], start_date:datetime, end_date:datetime) -> set:
-        modules = []
-        _set = set()
-        with self.get_untis_session().login() as session:
-            for sem in semesters:
-                klasse = session.klassen().filter(name=sem)[0]
-                table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
-                for _, row in table:
-                    for _, periods in row:
-                        if periods:
-                            for period in periods:
-                                for subject in period.subjects:
-                                    _set.add(subject.long_name)
-        for module_id, module_name in enumerate(sorted(list(_set))):
-                modules.append({"id": str(module_id), "name": module_name})
-        return modules
-
-    def get_events_from_modules(self, modules:list[str], semesters:list[str], start_date:datetime, end_date:datetime) -> list[dict]:
-        events = []
-        processed = set()
-        with self.get_untis_session().login() as session:
-            for sem in semesters:
-                klasse = session.klassen().filter(name=sem)
-                if not klasse:
-                    print(f"No class found for semester {sem}")
-                    continue
-                klasse = klasse[0]
-                table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
-                for _, row in table:
-                    for _, periods in row:
-                        if periods:
-                            for period in periods:
-                                for subject in period.subjects:
-                                    if subject.long_name in modules:
-                                        rooms = []
-                                        try:
-                                            rooms = [i.name for i in period.rooms]
-                                        except IndexError: # For some unknown reason, period.rooms is not found sometimes (correlates with "ro": {"id": 0}) --> Dirty fix: catch it and dont care about the room
-                                            rooms = ["None"]
-                                        events.append({
-                                            'name': subject.long_name,
-                                            'start': period.start if hasattr(period, 'start') else None,
-                                            'end': period.end if hasattr(period, 'end') else None,
-                                            'rooms': tuple(rooms),
-                                            'status': period.code if hasattr(period, 'code') else None
-                                        })
-                                        processed.add(subject.long_name)
-        events = [dict(t) for t in {tuple(d.items()) for d in events}]
-        return events
 
 # ---------- LOG ----------
 
@@ -230,3 +261,7 @@ class IcalManager:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         with open(self.config.get_config("login_logfile"), "a") as log_file:
             log_file.write(f"{timestamp}: '{user}' logged in\n")
+
+
+
+manager = IcalManager("config/settings.json", untis_file="instance/untis_data.json")

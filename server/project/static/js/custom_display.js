@@ -18,6 +18,9 @@ function load_events() {
 
     ics_sources.forEach(function(ics, cpt) {
         data_req(ics.url, function() {
+            if (this.status === 404) {
+                return;
+            }
             var events = fc_events(this.response, ics.event_properties);
             $('#calendar').fullCalendar('addEventSource', events);
             sources_to_load_cnt -= 1;
