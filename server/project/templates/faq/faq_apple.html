@@ -6,15 +6,21 @@
 
 {% block content %}
     <div class="faq-container mt-2">
-        <h2>Google Calendar</h3>
-        <h5 class="mt-3">1. Navigiere zu den Einstellungen</h5>
-        <img src="{{ url_for('static', filename='images/google_settings.png') }}" width="50%" style="min-width: 300px;">
+        <h2>IOS Calendar</h3>
+        <h5 class="mt-3">1. Gehe in der Kalender-App auf Kalender</h5>
+        <img src="{{ url_for('static', filename='images/IOS_1.png') }}" width="30%" style="min-width: 150px;;">
 
-        <h5 class="mt-3">2. Klicke auf der linken Seite auf "Kalender hinzufügen" > "Per URL"</h5>
-        <img src="{{ url_for('static', filename='images/google_per_url.png') }}" width="50%" style="min-width: 300px;">
+        <h5 class="mt-3">2. Klicke auf der linken Seite auf "hinzufügen"</h5>
+        <img src="{{ url_for('static', filename='images/IOS_2.png') }}" width="30%" style="min-width: 150px;;">
 
-        <h5 class="mt-3">3. Füge die URL deines ICals ein und klicke auf "Kalender hinzuzufügen"</h5>
-        <img src="{{ url_for('static', filename='images/google_add.png') }}" width="60%" style="min-width: 300px;">
+        <h5 class="mt-3">3. Wähle Kalenderabonnement</h5>
+        <img src="{{ url_for('static', filename='images/IOS_3.png') }}" width="30%" style="min-width: 150px;;">
+
+        <h5 class="mt-3">4. Gib hier deinen Link ein</h5>
+
+        <a href="/ical/{{ current_user.username }}"></a>
+
+        <img src="{{ url_for('static', filename='images/IOS_4.png') }}" width="30%" style="min-width: 150px;">
 
         <h5 class="mt-3">Die Daten werden dann automatisch von unserem Server bezogen und in eurem Kalender aktuell gehalten.</h5>
     </div>
