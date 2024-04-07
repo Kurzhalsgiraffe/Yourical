@@ -41,6 +41,7 @@ class User(db.Model, UserMixin):
     semesters = db.Column(db.TEXT)
     modules = db.Column(db.TEXT)
     last_login = db.Column(db.TEXT)
+    last_calendar_pull = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -130,7 +131,7 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="")
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="", last_calendar_pull="")
                 db.session.add(new_user)
                 db.session.commit()
                 flash('Registration successful. You can now log in.', 'success')
@@ -191,13 +192,16 @@ def process_module_selection():
 
 # ------ Download Routes  ------
 
-@app.route('/ical/<user>')
-def serve_file(user):
+@app.route('/ical/<username>')
+def serve_file(username):
     directory = 'calendars'
     try:
+        user = User.query.filter_by(username=username).first()
+        user.last_calendar_pull = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
-        manager.log_ical_request(ip_address, user)
-        return send_from_directory(directory, f"{user}.calendar.ics")
+        manager.log_ical_request(ip_address, username)
+
+        return send_from_directory(directory, f"{username}.calendar.ics")
     except FileNotFoundError:
         return "file not found", 404
 
