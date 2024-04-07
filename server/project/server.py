@@ -198,6 +198,8 @@ def serve_file(username):
     try:
         user = User.query.filter_by(username=username).first()
         user.last_calendar_pull = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        db.session.commit()
+
         ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
         manager.log_ical_request(ip_address, username)
 
