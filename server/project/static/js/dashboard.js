@@ -50,7 +50,7 @@ function updateModuleListItems(data) {
     moduleItemTable.empty();
 
     var containerWidth = moduleItemTable.width();
-    var numColumns = Math.floor(containerWidth / 400); // Assuming each column width is 400px, adjust as needed
+    var numColumns = Math.floor(containerWidth / 275); // Assuming each column width is 275px, adjust as needed
 
     var currentRow;
     data.forEach(function (item, index) {
