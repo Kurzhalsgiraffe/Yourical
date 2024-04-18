@@ -12,11 +12,7 @@
             {% if current_user.is_authenticated %}
                 <h2>Dein Kalender</h2>
                 <h5><a href="{{ domain }}/ical/{{ current_user.username }}">{{ domain }}/ical/{{ current_user.username }}</a></h5>
-            {% else %}
-                <h2>Baue deinen eigenen Kalender!</h2>
-                <p>Du kannst dich <a href="{% url '/register' %}">hier</a> registrieren.</p>
             {% endif %}
-
             <h2>SIA Events</h2>
             <h5><a href="{{ domain }}/sia">{{ domain }}/sia</a></h5>
             <h2>VDI Events</h2>
