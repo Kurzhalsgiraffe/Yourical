@@ -9,6 +9,7 @@ class Config:
     def __init__(self, config_file:str) -> None:
         self.config_file = config_file
         self.defaults = {
+            "banned_usernames": ["admin", "root", "sia", "vdi"],
             "database_uri": "sqlite:///database.db",
             "database_path": "instance/database.db",
             "encryption_secret_key": "secret",

@@ -123,11 +123,13 @@ def register():
     if form.username.data:
         username = form.username.data.lower()
         existing_user_username = User.query.filter_by(username=username).first()
-        if existing_user_username or not username.isalnum():
+        if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames"):
             if not username.isalnum():
                 flash('Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
             if existing_user_username:
                 flash('That username already exists. Please choose a different one.', 'error')
+            if username in manager.config.get_config("banned_usernames"):
+                flash('That username is not allowed. Please choose a different one.', 'error')
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
