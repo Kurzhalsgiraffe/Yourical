@@ -10,16 +10,24 @@
 
         <div class="links-container">
             {% if current_user.is_authenticated %}
-                <h2>Dein Kalender</h2>
-                <h5><a href="{{ domain }}/ical/{{ current_user.username }}">{{ domain }}/ical/{{ current_user.username }}</a></h5>
+                <div class="my-3">
+                    <h2>Dein Kalender</h2>
+                    <a href="{{ domain }}/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">{{ domain }}/ical/{{ current_user.username }}</a>
+                </div>
             {% endif %}
 
-            <h2>SIA Events</h2>
-            <h5><a href="{{ domain }}/sia">{{ domain }}/sia</a></h5>
-            <h2>VDI Events</h2>
-            <h5><a href="{{ domain }}/vdi">{{ domain }}/vdi</a></h5>
-            <h2>Wie es funktioniert:</h2>
-            <h5>Wie du die Kalender RICHTIG bei dir <br> hinzufügen kannst erfährst du <a href="{{ domain }}/faq">hier</a></h5>
+            <div class="my-3">
+                <h2>SIA Events</h2>
+                <a href="{{ domain }}/sia" class="link-box" onclick="copyLink(event)">{{ domain }}/sia</a>
+            </div>
+            <div class="my-3">
+                <h2>VDI Events</h2>
+                <a href="{{ domain }}/vdi" class="link-box" onclick="copyLink(event)">{{ domain }}/vdi</a>
+            </div>
+            <div class="my-3">
+                <h2>Wie es funktioniert:</h2>
+                <h5 class="mt-2">Wie du die Kalender RICHTIG bei dir <br> hinzufügen kannst erfährst du <a href="{{ url_for('faq') }}" class="link">hier</a></h5>
+            </div>
         </div>
     </div>
 {% endblock %}
