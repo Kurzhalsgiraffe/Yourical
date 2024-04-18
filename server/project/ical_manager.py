@@ -245,6 +245,12 @@ class IcalManager:
         except sqlite3.Error as err:
             print(err, traceback.format_exc())
 
+
+# ------- NETLOADER -------
+def foreign_url_loader():
+    
+    
+
 # ---------- LOG ----------
 
     def log_ical_request(self, ip_address, user):
