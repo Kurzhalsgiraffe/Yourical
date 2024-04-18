@@ -247,9 +247,9 @@ class IcalManager:
 
 
 # ------- NETLOADER -------
-def foreign_url_loader():
-    
-    
+    def foreign_url_loader():
+        pass
+
 
 # ---------- LOG ----------
 
