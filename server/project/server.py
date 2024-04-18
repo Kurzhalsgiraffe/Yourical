@@ -118,21 +118,20 @@ def register():
     form = RegisterForm()
     if form.username.data:
         username = form.username.data.lower()
-        hashed_first_password = bcrypt.generate_password_hash(form.password.data)
-        hashed_second_password = bcrypt.generate_password_hash(form.confirm_password.data)
         existing_user_username = User.query.filter_by(username=username).first()
-        if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames") or hashed_first_password != hashed_second_password:
+        if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames") or form.password.data != form.confirm_password.data:
             if not username.isalnum():
                 flash('- Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
             if existing_user_username:
                 flash('- That username already exists. Please choose a different name.', 'error')
             if username in manager.config.get_config("banned_usernames"):
                 flash('- That username is not allowed. Please choose a different name.', 'error')
-            if hashed_first_password != hashed_second_password:
+            if form.password.data != form.confirm_password.data:
                 flash('- Passwords do not match.', 'error')
         else:
             if form.validate_on_submit():
-                new_user = User(username=username, password=hashed_first_password, semesters="", modules="", last_login="", last_calendar_pull="")
+                hashed_password = bcrypt.generate_password_hash(form.password.data)
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="", last_calendar_pull="")
                 db.session.add(new_user)
                 db.session.commit()
                 flash('- Registration successful. You can now log in.', 'success')
