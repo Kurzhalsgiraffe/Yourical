@@ -15,9 +15,9 @@
 
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                <ul>
+                <ul class="error-message-list">
                     {% for message in messages %}
-                        <li>{{ message }}</li>
+                        <li class="error-message">{{ message }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}

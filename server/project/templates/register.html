@@ -15,9 +15,9 @@
 
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
-                <ul>
+                <ul class="error-message-list">
                     {% for message in messages %}
-                        <li>{{ message }}</li>
+                        <li class="error-message">{{ message }}</li>
                     {% endfor %}
                 </ul>
                 {% endif %}
@@ -26,7 +26,8 @@
             <form method="POST" action="">
                 <div class="user-box">{{ form.hidden_tag() }}</div>
                 <div class="user-box">{{ form.username }}</div>
-                <div>{{ form.password }}</div>
+                <div class="user-box">{{ form.password }}</div>
+                <div class="user-box">{{ form.confirm_password }}</div>
                 <div>{{ form.submit }}</div>
             </form>
 

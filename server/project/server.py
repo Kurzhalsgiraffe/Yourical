@@ -9,7 +9,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
 
 manager = ical_manager.IcalManager(config_file="config/settings.json", untis_file="instance/untis_data.json")
 
@@ -46,12 +46,8 @@ class User(db.Model, UserMixin):
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
     password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    confirm_password = PasswordField(validators=[InputRequired(), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
     submit = SubmitField('Register')
-
-    def validate_username(self, username):
-        existing_user_username = User.query.filter_by(username=username.data).first()
-        if existing_user_username:
-            raise ValidationError('That username already exists. Please choose a different one.')
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
@@ -106,9 +102,9 @@ def login():
                     db.session.commit()
                     return redirect(url_for('dashboard'))
                 else:
-                    flash('Incorrect password. Please try again.', 'error')
+                    flash('- Incorrect password. Please try again.', 'error')
             else:
-                flash('User does not exist. Please register.', 'error')
+                flash('- User does not exist. Please register.', 'error')
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -122,21 +118,24 @@ def register():
     form = RegisterForm()
     if form.username.data:
         username = form.username.data.lower()
+        hashed_first_password = bcrypt.generate_password_hash(form.password.data)
+        hashed_second_password = bcrypt.generate_password_hash(form.confirm_password.data)
         existing_user_username = User.query.filter_by(username=username).first()
-        if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames"):
+        if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames") or hashed_first_password != hashed_second_password:
             if not username.isalnum():
-                flash('Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
+                flash('- Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
             if existing_user_username:
-                flash('That username already exists. Please choose a different one.', 'error')
+                flash('- That username already exists. Please choose a different name.', 'error')
             if username in manager.config.get_config("banned_usernames"):
-                flash('That username is not allowed. Please choose a different one.', 'error')
+                flash('- That username is not allowed. Please choose a different name.', 'error')
+            if hashed_first_password != hashed_second_password:
+                flash('- Passwords do not match.', 'error')
         else:
             if form.validate_on_submit():
-                hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="", last_calendar_pull="")
+                new_user = User(username=username, password=hashed_first_password, semesters="", modules="", last_login="", last_calendar_pull="")
                 db.session.add(new_user)
                 db.session.commit()
-                flash('Registration successful. You can now log in.', 'success')
+                flash('- Registration successful. You can now log in.', 'success')
                 return redirect(url_for('login'))
 
     return render_template('register.html', form=form)
