@@ -15,20 +15,28 @@ p {
 }
 
 .home-text-container {
-  width: 100vw;
-  height: 100vh;
   display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-top: 150px;
+}
+
+.home-text {
   font-size: 96px;
-  z-index: -99;
   color: white;
   opacity: 0.8;
   user-select: none;
-  text-shadow: 1px 1px rgba(0,0,0,0.1);
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.links-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.links-container h2, .links-container h5 {
+  margin: 0;
 }
 
 a {

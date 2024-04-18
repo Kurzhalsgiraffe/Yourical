@@ -45,7 +45,7 @@ class User(db.Model, UserMixin):
 
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=3, max=20)], render_kw={"placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min=8, max=20)], render_kw={"placeholder": "Password"})
+    password = PasswordField(validators=[InputRequired(), Length(min=8)], render_kw={"placeholder": "Password"})
     confirm_password = PasswordField(validators=[InputRequired(), EqualTo('password', message='Passwords must match')], render_kw={"placeholder": "Confirm Password"})
     submit = SubmitField('Register')
 
@@ -58,7 +58,8 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def index():
-    return render_template('index.html', current_user=current_user)
+    domain = request.scheme + '://' + request.host
+    return render_template('index.html', current_user=current_user, domain=domain)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required

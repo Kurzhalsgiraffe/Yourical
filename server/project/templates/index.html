@@ -6,6 +6,18 @@
 
 {% block content %}
     <div class="home-text-container">
-        Untis 2 ICal
+        <div class="home-text">Yourical</div>
+
+        <div class="links-container">
+            {% if current_user.is_authenticated %}
+                <h2>Dein Kalender</h2>
+                <h5><a href="{{ domain }}/ical/{{ current_user.username }}">{{ domain }}/ical/{{ current_user.username }}</a></h5>
+            {% endif %}
+
+            <h2>SIA Events</h2>
+            <h5><a href="{{ domain }}/ical/sia">{{ domain }}/ical/sia</a></h5>
+            <h2>VDI Events</h2>
+            <h5><a href="{{ domain }}/ical/vdi">{{ domain }}/ical/vdi</a></h5>
+        </div>
     </div>
 {% endblock %}
