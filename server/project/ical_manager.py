@@ -349,6 +349,3 @@ class IcalManager:
 
 
 manager = IcalManager("config/settings.json", untis_file="instance/untis_data.json")
-manager.untis_handler.update_schoolyear_from_untis()
-manager.untis_handler.update_all_tables_from_untis()
-manager.generate_all_icals()
