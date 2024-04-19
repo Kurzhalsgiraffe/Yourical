@@ -2,8 +2,13 @@ import json
 import sqlite3
 import traceback
 import webuntis
-from datetime import datetime
+import requests
+import time
+import icalendar
+from datetime import datetime, timedelta
 from icalendar import Calendar, Event, Timezone
+import pytz
+
 
 class Config:
     def __init__(self, config_file:str) -> None:
@@ -83,7 +88,74 @@ class UntisHandler:
         with open(self.save_file, "w", encoding="utf-8") as file:
             json.dump(self.data, file, indent=4, ensure_ascii=False)
 
-# ---------- UNTIS API ----------
+    def netload(self):
+        def netloader_log(message:str):
+            try:
+                with open("logs/netloader.log", 'a') as f:
+                    f.write((time.strftime("%d/%m/%Y-%H:%M:%S", time.localtime()) + " " + message + "\n"))
+                    f.close()
+            except FileNotFoundError:
+                print("Couldnt write logmessage into netloader.log")
+        try:
+            with open("instance/netloader.json", 'r') as f:
+                netloader_urls = json.load(f)
+                f.close()
+        except FileNotFoundError:
+            netloader_log("configure instance/netloader.json to load url calendars into your application \{'sample':'sample.com/file.ics'\}")
+            
+
+        # ----- download icals from foreign links ----- 
+        for name,url in netloader_urls.items():
+            response = requests.get(url)
+            if response.status_code == 200:
+                try:
+                    with open("calendars/"+name+".calendar.ics", 'wb') as f:
+                        f.write(response.content)
+                        f.close()
+                except FileNotFoundError:
+                    netloader_log(name+" --- some issue saving the file after download")
+                netloader_log(name + " downloaded successfully")
+            else:
+                netloader_log(name + "HTTP != 200")
+
+        # ----- ical to json -------
+        netloader_json={}
+        for name,url in netloader_urls.items():
+            try:
+                with open('calendars/' + name +".calendar.ics") as f:
+                    cal=icalendar.Calendar.from_ical(f.read())
+                    eventlist=[]
+                    for component in cal.walk():
+                        if component.name == "VEVENT":
+                            utc_timezone = pytz.utc
+                            timezone_de = pytz.timezone('Europe/Paris') 
+                            date_format = "%Y-%m-%d %H:%M:%S"
+                            event = {}
+                            start_utc = component.get('DTSTART').dt.strftime('%Y-%m-%d %H:%M:%S')
+                            end_utc = component.get('DTEND').dt.strftime('%Y-%m-%d %H:%M:%S')
+                            start_naive = datetime.strptime(start_utc, date_format)
+                            end_naive = datetime.strptime(end_utc, date_format)
+                            start_aware = pytz.utc.localize(start_naive)
+                            end_aware = pytz.utc.localize(end_naive)  
+                            start_local = start_aware.astimezone(timezone_de)
+                            end_local = end_aware.astimezone(timezone_de)
+                            event['start'] = start_local.strftime('%Y-%m-%d %H:%M:%S')
+                            event['end'] = end_local.strftime('%Y-%m-%d %H:%M:%S')
+                            event['name'] = component.get('SUMMARY')
+                            event['rooms'] = [component.get('LOCATION')]
+                            event['status'] = None
+                            eventlist.append(event)
+                    netloader_json[name]=eventlist
+            except FileNotFoundError:
+                netloader_log(name +"couldn't open " + name + "calendar.ics")
+        for name, events in netloader_json.items():
+            self.data["module_lists"][name]=[]
+            self.data["module_lists"][name].append(name)
+            self.data["timetables"][name]=events
+            self.data["semesters"].append(name)
+
+
+    # ---------- UNTIS API ----------
 
     def get_untis_session(self):
         untis_username = self.config.get_config("untis_username")
@@ -135,6 +207,7 @@ class UntisHandler:
                 self.data["module_lists"][klasse.name] = list(module_list)
                 self.data["timetables"][klasse.name] = timetable
             self.data["semesters"] = sorted(semesters)
+        self.netload()
         self.save_as_json()
 
 # ---------- ACCESS METHODS ----------
@@ -164,11 +237,22 @@ class UntisHandler:
         events = []
         timetables = self.data.get("timetables")
         for sem in semesters:
-            for event in timetables.get(sem):
-                if event:
-                    if event.get("name") in modules:
-                        event["rooms"] = tuple(event["rooms"])
-                        events.append(event)
+            try:  #----this part is only needed if u use netloader---
+                with open("instance/netloader.json", 'r') as f:
+                    netloader_urls = json.load(f)
+                    f.close()
+            except FileNotFoundError:
+                self.netload().netloader_log("configure instance/netloader.json to load url calendars into your application \{'sample':'sample.com/file.ics'\}")
+            if sem in netloader_urls.keys():
+                for event in timetables.get(sem):
+                    event["rooms"] = tuple(event["rooms"])
+                    events.append(event)
+            else: # --- netloader code ends here
+                for event in timetables.get(sem):
+                    if event:
+                        if event.get("name") in modules:
+                            event["rooms"] = tuple(event["rooms"])
+                            events.append(event)
         events = [dict(t) for t in {tuple(d.items()) for d in events}]
         return events
 
@@ -189,7 +273,6 @@ class IcalManager:
 
     def create_ical(self, user, events:list[dict]):
         cal = Calendar()
-
         timezone = Timezone()
         timezone.add('TZID', 'Europe/Paris')
         cal.add('X-WR-TIMEZONE', 'Europe/Paris')
@@ -246,12 +329,6 @@ class IcalManager:
         except sqlite3.Error as err:
             print(err, traceback.format_exc())
 
-
-# ------- NETLOADER -------
-    def foreign_url_loader():
-        pass
-
-
 # ---------- LOG ----------
 
     def log_ical_request(self, ip_address, user):
@@ -272,3 +349,6 @@ class IcalManager:
 
 
 manager = IcalManager("config/settings.json", untis_file="instance/untis_data.json")
+manager.untis_handler.update_schoolyear_from_untis()
+manager.untis_handler.update_all_tables_from_untis()
+manager.generate_all_icals()
