@@ -5,8 +5,9 @@ import webuntis
 import requests
 import time
 import icalendar
-from datetime import datetime
+from datetime import datetime, timedelta
 from icalendar import Calendar, Event, Timezone
+import pytz
 
 
 class Config:
@@ -126,9 +127,20 @@ class UntisHandler:
                     eventlist=[]
                     for component in cal.walk():
                         if component.name == "VEVENT":
+                            utc_timezone = pytz.utc
+                            timezone_de = pytz.timezone('Europe/Paris') 
+                            date_format = "%Y-%m-%d %H:%M:%S"
                             event = {}
-                            event['start'] = component.get('DTSTART').dt.strftime('%Y-%m-%d %H:%M:%S')
-                            event['end'] = component.get('DTEND').dt.strftime('%Y-%m-%d %H:%M:%S')
+                            start_utc = component.get('DTSTART').dt.strftime('%Y-%m-%d %H:%M:%S')
+                            end_utc = component.get('DTEND').dt.strftime('%Y-%m-%d %H:%M:%S')
+                            start_naive = datetime.strptime(start_utc, date_format)
+                            end_naive = datetime.strptime(end_utc, date_format)
+                            start_aware = pytz.utc.localize(start_naive)
+                            end_aware = pytz.utc.localize(end_naive)  
+                            start_local = start_aware.astimezone(timezone_de)
+                            end_local = end_aware.astimezone(timezone_de)
+                            event['start'] = start_local.strftime('%Y-%m-%d %H:%M:%S')
+                            event['end'] = end_local.strftime('%Y-%m-%d %H:%M:%S')
                             event['name'] = component.get('SUMMARY')
                             event['rooms'] = [component.get('LOCATION')]
                             event['status'] = None
