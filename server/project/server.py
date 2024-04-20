@@ -132,7 +132,7 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", last_login="", last_calendar_pull="")
+                new_user = User(username=username, password=hashed_password, semesters='["sia","vdi"]', modules='["sia","vdi"]', last_login="", last_calendar_pull="")
                 db.session.add(new_user)
                 db.session.commit()
                 flash('- Registration successful. You can now log in.', 'success')
