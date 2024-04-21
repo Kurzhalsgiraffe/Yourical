@@ -84,3 +84,35 @@ $(document).ready(function () {
     $("#semesterItemForm").submit(submitSemesterForm);
     $("#moduleItemForm").submit(submitModuleForm);
 });
+
+
+
+document.addEventListener('input', function() {
+    var searchInput = document.getElementById('searchInput');
+    var checkboxes = document.querySelectorAll('#semesterItemTable input[type="checkbox"]');
+
+    searchInput.addEventListener('input', function() {
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.value.toLowerCase().includes(searchInput.value.toLowerCase())) {
+                checkbox.parentElement.style.display = '';
+            } else {
+                checkbox.parentElement.style.display = 'none';
+            }
+        });
+    });
+});
+
+document.addEventListener('input', function() {
+    var searchInput = document.getElementById('searchInput1');
+    var checkboxes = document.querySelectorAll('#moduleItemTable input[type="checkbox"]');
+
+    searchInput.addEventListener('input', function() {
+        checkboxes.forEach(function(checkbox) {
+            if (checkbox.value.toLowerCase().includes(searchInput.value.toLowerCase())) {
+                checkbox.parentElement.style.display = '';
+            } else {
+                checkbox.parentElement.style.display = 'none';
+            }
+        });
+    });
+});

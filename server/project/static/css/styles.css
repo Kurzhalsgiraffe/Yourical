@@ -256,3 +256,15 @@ form#moduleItemForm button {
   text-decoration: underline;
   color: #b66f81;
 }
+
+.searchInput {
+  padding: 10px;
+  margin: 5px;
+  background-color: rgba(240, 240, 240, 0.2);
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+  color:white;
+}
+.searchDiv{
+  text-align: center;
+}
