@@ -40,6 +40,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(80), nullable=False)
     semesters = db.Column(db.TEXT)
     modules = db.Column(db.TEXT)
+    additional_calendars = db.Column(db.TEXT)
+    register_date = db.Column(db.TEXT)
     last_login = db.Column(db.TEXT)
     last_calendar_pull = db.Column(db.TEXT)
 
@@ -132,7 +134,8 @@ def register():
         else:
             if form.validate_on_submit():
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters='["sia","vdi"]', modules='["sia","vdi"]', last_login="", last_calendar_pull="")
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_pull="")
+                new_user.register_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 db.session.add(new_user)
                 db.session.commit()
                 flash('- Registration successful. You can now log in.', 'success')
@@ -144,11 +147,18 @@ def register():
 
 @app.route('/get_semester_list')
 def get_semester_list():
+    lst = []
     semester_list = []
     semesters = manager.untis_handler.get_all_semesters()
     additional_calendars = manager.netloader.get_all_names()
 
-    for id, name in enumerate(semesters.extend(additional_calendars)):
+    if semesters is not None:
+        lst.extend(semesters)
+
+    if additional_calendars is not None:
+        lst.extend(additional_calendars)
+
+    for id, name in enumerate(lst):
         semester_list.append({"id": str(id), "name": name})
 
     if current_user.semesters:
@@ -237,7 +247,7 @@ def serve_vdi():
 @scheduler.task('interval', id='update_calendars', seconds=manager.config.get_config("seconds_between_calendar_updates"), misfire_grace_time=900)
 def update_calendars():
     manager.untis_handler.update_schoolyear_from_untis()
-    manager.untis_handler.update_all_tables_from_untis()
+    manager.untis_handler.update_all_tables_from_untis() # TODO: Netloader einbinden
     manager.generate_all_icals()
 
 ## ----- MAIN ----- ##

@@ -260,11 +260,8 @@ class Netloader:
         self.save_as_json()
 
     def get_all_names(self):
-        lst = []
         names = self.data.get("names")
-        for id, name in enumerate(names):
-            lst.append({"id": str(id), "name": name})
-        return lst
+        return names
 
 class IcalManager:
     def __init__(self, config_file:str) -> None:
