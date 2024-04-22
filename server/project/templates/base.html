@@ -15,21 +15,30 @@
 </head>
 
 <body>
-    <div class="user">
-        <div class="user-content px-3">
-            {% if current_user.is_authenticated %}
-            <div>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            </div>
-            {% else %}
-            <div>
-                <ul>
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
-                </ul>
-            </div>
-            {% endif %}
-        </div>
+
+    <img class="burger" id="id_burger" src="{{ url_for('static', filename='images/burger.png') }}">
+
+
+    <div class="footer-content">
+            <ul class="navbar1" id="id_navbar1">
+                <li>
+                    <div class="logo">
+                        <a class="navbar_link"  href="{{ url_for('index') }}">
+                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                        </a>
+                    </div>
+                </li>
+                <li><a class="navbar_link" href="{{ url_for('faq') }}">FAQ</a></li>
+                <li><a class="navbar_link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a class="navbar_link" href="{{ url_for('privacy_policy') }}">Datenschutz</a></li>
+                {% if current_user.is_authenticated %}
+                    <li><a class="navbar_link" href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
+                <li><a class="navbar_link" href="{{ url_for('login') }}">Login</a></li>
+                <li><a class="navbar_link" href="{{ url_for('register') }}">Register</a></li>
+                {% endif %}
+            </ul>
+
     </div>
 
     <div class="wrapper px-3">
@@ -37,20 +46,8 @@
     </div>
 
     <footer class="footer mt-4">
-        <div class="footer-content px-3">
-            <div class="logo">
-                <a href="{{ url_for('index') }}">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-                </a>
-            </div>
-            <div class="navbar">
-                <ul>
-                    <li><a href="{{ url_for('faq') }}">FAQ</a></li>
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('privacy_policy') }}">Datenschutz</a></li>
-                </ul>
-            </div>
-        </div>
+        
+        <p>&copy; 2024 yourical.de - Max H. & Silas F.</p>
     </footer>
 
     <div class="gradient-bg">
@@ -64,6 +61,7 @@
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}" type="application/javascript"></script>
     <script src="{{ url_for('static', filename='js/utils.js') }}" type="application/javascript"></script>
+    <script src="{{ url_for('static', filename='js/header.js') }}" type="application/javascript"></script>
     {% block additionaljavascript %}{% endblock %}
 </body>
 

@@ -12,8 +12,8 @@
 {% endblock %}
 
 {% block content %}
+    <div id="header-placeholder"></div>
     <div class="center-text">
-        <h2>Für die beste Funktionalität im Desktop-Browser benutzen!</h2>
         <h2>Semesterauswahl</h2>
         <h5>Wähle hier alle Semester aus welchen du Kurse angezeigt bekommen möchtest.
         Dies kannst du natürlich später ändern.</h5>
@@ -21,7 +21,7 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="searchInput" placeholder="Search..." class="searchInput">
+            <input type="text" id="searchInput" placeholder="Filter..." class="searchInput">
         </div>
         <form id="semesterItemForm">
             <table id="semesterItemTable" class="itemTable">
@@ -42,7 +42,7 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="searchInput1" placeholder="Search..." class="searchInput">
+            <input type="text" id="searchInput1" placeholder="Filter..." class="searchInput">
         </div>
         <form id="moduleItemForm">
             <table id="moduleItemTable" class="itemTable">
@@ -71,7 +71,6 @@
 
     <div id='calendar' data-username="{{ current_user.username }}"></div>
     <div class="center-text mt-4">
-        <h1>Kleine Spende für die Serverkosten <3</h1>
         <img src="static/images/kleine_spende.gif" alt="Kleine Spende">
         <h1><a href="https://paypal.me/silfeu"><u>paypal.me/silfeu</u></a></h1><h5>(externer Link)</h5>
     </div>

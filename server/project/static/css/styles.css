@@ -126,11 +126,20 @@ form#moduleItemForm button {
     }
 }
 
+
+
 .wrapper {
   flex: 1;
   font-size: 12px;
   max-width: 1536px;
   margin: 0 auto 2em;
+  margin-top: 70px;
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+  margin-top: 145px;
+  }
 }
 
 .footer {
@@ -144,39 +153,94 @@ form#moduleItemForm button {
 
 .footer-content {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: row;
   max-width: 1536px;
   width: 100%;
 }
 
 .logo img {
-  height: 40px;
+  height: 24px;
 }
 
-.navbar {
-  margin: 0;
-  padding: 0;
-}
-
-.navbar ul {
+.navbar1 {
+  display: flex;
+  flex-direction: row;
+  max-width: 1536px;
+  width: 100%;
   list-style: none;
   padding: 0;
   margin: 0;
   text-align: center;
+  position: fixed;
+  top: 0;
+  z-index: 9998;
 }
 
-.navbar ul li {
+.navbar_link{
+  list-style: none;
   display: inline-block;
-  margin-right: 20px;
+  list-style: none;
+  padding: 15px 15px 15px 15px;
+  background-color: rgb(159, 122, 189,0.9);
+  border: 2px solid rgba(240, 240, 240, 0.7);
+  border-radius: 0px 0px 10px 10px;
+  border-top: none;
+  color:white;
+}
+
+.burger {
+  display: none;
+  position: fixed;
+  padding: 5px;
+  top: 5;
+  left: 5;
+  height: 50px;
+  width:  50px;
+  z-index: 9999;
+}
+
+@media (max-width: 600px) {
+  .burger{
+    display:inline-block;
+  }
+  .navbar1 {
+    display:none;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    float:left;
+    width: 100%;
+  }
+
+  .navbar_link{
+    display: inline-block;
+    padding: 0px 5px 0px 5px;
+    background-color: rgb(159, 122, 189,0.9);
+    border: 2px solid rgba(240, 240, 240, 0.7);
+    border-top: none;
+    border-radius: 0px;
+    color:white;
+    width: 100%;
+  }
+}
+
+
+.navbar_link:hover{
+  background-color: rgba(240, 240, 240, 0.6);
 }
 
 .navbar ul li:last-child {
   margin-right: 0;
 }
 
+
+
+
+
 .user {
-  margin-top: 10px;
+  margin-top: 0px;
   display: flex;
   justify-content: center;
   width: 100%;
@@ -210,7 +274,6 @@ form#moduleItemForm button {
   border-radius: 5px;
   background-color: rgba(240, 240, 240, 0.2); /* Slightly transparent light gray background */
   color: white;
-
   transition: background-color 0.3s ease;
   font-size: 20px;
 }
@@ -267,4 +330,20 @@ form#moduleItemForm button {
 }
 .searchDiv{
   text-align: center;
+}
+
+.navbar_full{
+  height: 50px;
+  width: 100%;
+
+}
+.navbar_full_element{
+  border: 1px solid white;
+  border-radius: ;
+  background-color: none;
+  
+}
+.navbar_full_element:hover{
+  border: 1px solid white;
+  border-radius: 0px 0px 5px 5px;
 }
