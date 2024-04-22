@@ -96,6 +96,7 @@ class UntisHandler:
                     f.close()
             except FileNotFoundError:
                 print("Couldnt write logmessage into netloader.log")
+
         try:
             with open("instance/netloader.json", 'r') as f:
                 netloader_urls = json.load(f)
@@ -150,14 +151,8 @@ class UntisHandler:
                 self.data["timetables"][name]=events
                 self.data["semesters"].append(name) 
 
-            
         except FileNotFoundError:
-            netloader_log("configure instance/netloader.json to load url calendars into your application \{'sample':'sample.com/file.ics'\}")
-
-
-
-        
-
+            netloader_log("configure instance/netloader.json to load url calendars into your application {'sample':'sample.com/file.ics'}")
 
     # ---------- UNTIS API ----------
 
