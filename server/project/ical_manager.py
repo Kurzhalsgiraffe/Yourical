@@ -89,70 +89,63 @@ class UntisHandler:
             json.dump(self.data, file, indent=4, ensure_ascii=False)
 
     def netload(self):
-        def netloader_log(message:str):
-            try:
-                with open("logs/netloader.log", 'a') as f:
-                    f.write((time.strftime("%d/%m/%Y-%H:%M:%S", time.localtime()) + " " + message + "\n"))
-                    f.close()
-            except FileNotFoundError:
-                print("Couldnt write logmessage into netloader.log")
-
         try:
             with open("instance/netloader.json", 'r') as f:
                 netloader_urls = json.load(f)
-                f.close()
-
-            # ----- download icals from foreign links ----- 
-            for name,url in netloader_urls.items():
-                response = requests.get(url)
-                if response.status_code == 200:
-                    try:
-                        with open("calendars/"+name+".calendar.ics", 'wb') as f:
-                            f.write(response.content)
-                            f.close()
-                    except FileNotFoundError:
-                        netloader_log(name+" --- some issue saving the file after download")
-                    netloader_log(name + " downloaded successfully")
-                else:
-                    netloader_log(name + "HTTP != 200")
-
-            # ----- ical to json -------
-            netloader_json={}
-            for name,url in netloader_urls.items():
-                try:
-                    with open('calendars/' + name +".calendar.ics") as f:
-                        cal=icalendar.Calendar.from_ical(f.read())
-                        eventlist=[]
-                        for component in cal.walk():
-                            if component.name == "VEVENT":
-                                timezone_de = pytz.timezone('Europe/Paris') 
-                                date_format = "%Y-%m-%d %H:%M:%S"
-                                event = {}
-                                start_utc = component.get('DTSTART').dt.strftime('%Y-%m-%d %H:%M:%S')
-                                end_utc = component.get('DTEND').dt.strftime('%Y-%m-%d %H:%M:%S')
-                                start_naive = datetime.strptime(start_utc, date_format)
-                                end_naive = datetime.strptime(end_utc, date_format)
-                                start_aware = pytz.utc.localize(start_naive)
-                                end_aware = pytz.utc.localize(end_naive)  
-                                start_local = start_aware.astimezone(timezone_de)
-                                end_local = end_aware.astimezone(timezone_de)
-                                event['start'] = start_local.strftime('%Y-%m-%d %H:%M:%S')
-                                event['end'] = end_local.strftime('%Y-%m-%d %H:%M:%S')
-                                event['name'] = component.get('SUMMARY')
-                                event['rooms'] = [component.get('LOCATION')]
-                                event['status'] = None
-                                eventlist.append(event)
-                        netloader_json[name]=eventlist
-                except FileNotFoundError:
-                    netloader_log(name +"couldn't open " + name + "calendar.ics")
-            for name, events in netloader_json.items():
-                self.data["module_lists"][name]=[]
-                self.data["module_lists"][name].append(name)
-                self.data["timetables"][name]=events
-                self.data["semesters"].append(name)
-
         except FileNotFoundError:
             netloader_log("configure instance/netloader.json to load url calendars into your application {'sample':'sample.com/file.ics'}")
+            return
+
+        # ----- download icals from foreign links -----
+        for name, url in netloader_urls.items():
+            response = requests.get(url)
+            if response.status_code == 200:
+                try:
+                    with open("calendars/"+name+".calendar.ics", 'wb') as f:
+                        f.write(response.content)
+                        f.close()
+                except FileNotFoundError:
+                    netloader_log(name+" --- some issue saving the file after download")
+                netloader_log(name + " downloaded successfully")
+            else:
+                netloader_log(name + "HTTP != 200")
+
+        # ----- ical to json -------
+        netloader_json={}
+        for name, url in netloader_urls.items():
+            try:
+                with open('calendars/' + name +".calendar.ics") as f:
+                    cal=icalendar.Calendar.from_ical(f.read())
+            except FileNotFoundError:
+                netloader_log(name +"couldn't open " + name + "calendar.ics")
+
+            eventlist=[]
+            for component in cal.walk():
+                if component.name == "VEVENT":
+                    timezone_de = pytz.timezone('Europe/Paris') 
+                    date_format = "%Y-%m-%d %H:%M:%S"
+                    event = {}
+                    start_utc = component.get('DTSTART').dt.strftime('%Y-%m-%d %H:%M:%S')
+                    end_utc = component.get('DTEND').dt.strftime('%Y-%m-%d %H:%M:%S')
+                    start_naive = datetime.strptime(start_utc, date_format)
+                    end_naive = datetime.strptime(end_utc, date_format)
+                    start_aware = pytz.utc.localize(start_naive)
+                    end_aware = pytz.utc.localize(end_naive)  
+                    start_local = start_aware.astimezone(timezone_de)
+                    end_local = end_aware.astimezone(timezone_de)
+                    event['start'] = start_local.strftime('%Y-%m-%d %H:%M:%S')
+                    event['end'] = end_local.strftime('%Y-%m-%d %H:%M:%S')
+                    event['name'] = component.get('SUMMARY')
+                    event['rooms'] = [component.get('LOCATION')]
+                    event['status'] = None
+                    eventlist.append(event)
+            netloader_json[name]=eventlist
+
+        for name, events in netloader_json.items():
+            self.data["module_lists"][name]=[]
+            self.data["module_lists"][name].append(name)
+            self.data["timetables"][name]=events
+            self.data["semesters"].append(name)
 
     # ---------- UNTIS API ----------
 
@@ -348,6 +341,10 @@ class IcalManager:
         with open(self.config.get_config("login_logfile"), "a") as log_file:
             log_file.write(f"{timestamp}: '{user}' logged in\n")
 
-
-
-manager = IcalManager("config/settings.json", untis_file="instance/untis_data.json")
+def netloader_log(message:str):
+    try:
+        with open("logs/netloader.log", 'a') as f:
+            f.write((time.strftime("%d/%m/%Y-%H:%M:%S", time.localtime()) + " " + message + "\n"))
+            f.close()
+    except FileNotFoundError:
+        print("Couldnt write logmessage into netloader.log")
