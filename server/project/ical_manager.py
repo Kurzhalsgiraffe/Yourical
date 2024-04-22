@@ -89,6 +89,7 @@ class UntisHandler:
             json.dump(self.data, file, indent=4, ensure_ascii=False)
 
     def netload(self):
+
         def netloader_log(message:str):
             try:
                 with open("logs/netloader.log", 'a') as f:
@@ -96,12 +97,13 @@ class UntisHandler:
                     f.close()
             except FileNotFoundError:
                 print("Couldnt write logmessage into netloader.log")
+
         try:
             with open("instance/netloader.json", 'r') as f:
                 netloader_urls = json.load(f)
                 f.close()
         except FileNotFoundError:
-            netloader_log("configure instance/netloader.json to load url calendars into your application \{'sample':'sample.com/file.ics'\}")
+            print("configure instance/netloader.json to load url calendars into your application {'sample':'sample.com/file.ics'}")
             
 
         # ----- download icals from foreign links ----- 
