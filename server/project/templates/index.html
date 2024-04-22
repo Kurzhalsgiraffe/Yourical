@@ -8,7 +8,7 @@
     <div class="home-container">
         <div class="home-text">Yourical</div>
 
-        <img src="{{ url_for('static', filename='images/index_comp.png') }}" width="30%" style="min-width: 300px;">  
+        <img src="{{ url_for('static', filename='images/index_comp.png') }}" width="25%" style="min-width: 300px;">
 
         <div class="links-container">
             {% if current_user.is_authenticated %}
@@ -16,13 +16,13 @@
                     <h2>Dein Kalender</h2>
                     <a href="{{ domain }}/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">{{ domain }}/ical/{{ current_user.username }}</a>
                 </div>
-                
+
 
             {% else %}
                 <div class="my-3">
                     <h2>Erstelle deinen Kalender</h2>
                     <h5>
-                        <a href="{{ domain }}/register" class="link-box" >{{ domain }}/DeinKalender</a> 
+                        <a href="{{ domain }}/register" class="link-box" >{{ domain }}/DeinKalender</a>
                     </h5>
                 </div>
 
