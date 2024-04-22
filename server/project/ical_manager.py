@@ -149,7 +149,7 @@ class UntisHandler:
                 self.data["module_lists"][name]=[]
                 self.data["module_lists"][name].append(name)
                 self.data["timetables"][name]=events
-                self.data["semesters"].append(name) 
+                self.data["semesters"].append(name)
 
         except FileNotFoundError:
             netloader_log("configure instance/netloader.json to load url calendars into your application {'sample':'sample.com/file.ics'}")
@@ -217,7 +217,7 @@ class UntisHandler:
 
     def get_all_semesters(self):
         semester_list = []
-        semesters = self.data.get("semesters")
+        semesters = self.data.get("semesters") # + ["vdi", "sia"]
         for semester_id, semester_name in enumerate(semesters):
             semester_list.append({"id": str(semester_id), "name": semester_name})
         return semester_list

@@ -134,11 +134,7 @@ form#moduleItemForm button {
   margin: 0 auto 2em;
 }
 
-@media (max-width: 600px) {
-  .wrapper {
-  margin-top: 145px;
-  }
-}
+
 
 .footer {
   background-color: rgba(0, 0, 0, 0.7);
