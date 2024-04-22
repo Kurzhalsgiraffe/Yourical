@@ -20,25 +20,24 @@
 
 
     <div class="header-content">
-            <ul class="navbar1" id="id_navbar">
-                <li>
-                    <div class="logo">
-                        <a class="navbar_link"  href="{{ url_for('index') }}">
-                            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
-                        </a>
-                    </div>
-                </li>
-                <li><a class="navbar_link" href="{{ url_for('faq') }}">FAQ</a></li>
-                <li><a class="navbar_link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                <li><a class="navbar_link" href="{{ url_for('privacy_policy') }}">Datenschutz</a></li>
-                {% if current_user.is_authenticated %}
-                    <li><a class="navbar_link" href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                <li><a class="navbar_link" href="{{ url_for('login') }}">Login</a></li>
-                <li><a class="navbar_link" href="{{ url_for('register') }}">Register</a></li>
-                {% endif %}
-            </ul>
-
+        <ul class="navbar1" id="id_navbar">
+            <li>
+                <div class="logo">
+                    <a class="navbar_link"  href="{{ url_for('index') }}">
+                        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+                    </a>
+                </div>
+            </li>
+            <li><a class="navbar_link" href="{{ url_for('faq') }}">FAQ</a></li>
+            <li><a class="navbar_link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a class="navbar_link" href="{{ url_for('privacy_policy') }}">Datenschutz</a></li>
+            {% if current_user.is_authenticated %}
+                <li><a class="navbar_link" href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+            <li><a class="navbar_link" href="{{ url_for('login') }}">Login</a></li>
+            <li><a class="navbar_link" href="{{ url_for('register') }}">Register</a></li>
+            {% endif %}
+        </ul>
     </div>
 
     <div class="wrapper">

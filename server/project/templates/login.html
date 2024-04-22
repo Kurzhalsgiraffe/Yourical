@@ -24,8 +24,8 @@
             {% endwith %}
 
             <form method="POST" action="">
-                <div class="user-box">{{ form.username }}</div>
-                <div class="user-box">{{ form.password }}</div>
+                <div>{{ form.username }}</div>
+                <div>{{ form.password }}</div>
                 <div>{{ form.hidden_tag() }}</div>
                 <div>{{ form.submit }}</div>
             </form>

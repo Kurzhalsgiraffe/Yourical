@@ -168,7 +168,6 @@ form#moduleItemForm button {
   text-align: center;
   position: fixed;
   top: 0;
-  z-index: 9998;
 }
 
 .navbar_link{
@@ -208,8 +207,6 @@ form#moduleItemForm button {
     list-style: none;
     padding: 0;
     margin: 0;
-    text-align: center;
-    float:left;
     width: 100%;
   }
 
@@ -223,30 +220,6 @@ form#moduleItemForm button {
 
 .navbar_link:hover{
   background-color: rgba(240, 240, 240, 0.6);
-}
-
-.user {
-  margin-top: 0px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.user-content {
-  display: flex;
-  justify-content: right;
-  align-items: center;
-  max-width: 1536px;
-  width: 100%;
-}
-
-.user ul li {
-  display: inline-block;
-  margin-right: 20px;
-}
-
-.user ul li:last-child {
-  margin-right: 0;
 }
 
 .center-text {

@@ -243,15 +243,18 @@ class UntisHandler:
             except FileNotFoundError:
                 self.netload().netloader_log("configure instance/netloader.json to load url calendars into your application \{'sample':'sample.com/file.ics'\}")
             if sem in netloader_urls.keys():
-                for event in timetables.get(sem):
-                    event["rooms"] = tuple(event["rooms"])
-                    events.append(event)
-            else: # --- netloader code ends here
-                for event in timetables.get(sem):
-                    if event:
-                        if event.get("name") in modules:
+                if sem in timetables:
+                    for event in timetables[sem]:
+                        if event:
                             event["rooms"] = tuple(event["rooms"])
                             events.append(event)
+            else: # --- netloader code ends here
+                if sem in timetables:
+                    for event in timetables[sem]:
+                        if event:
+                            if event.get("name") in modules:
+                                event["rooms"] = tuple(event["rooms"])
+                                events.append(event)
         events = [dict(t) for t in {tuple(d.items()) for d in events}]
         return events
 
