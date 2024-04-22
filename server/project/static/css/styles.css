@@ -127,14 +127,11 @@ form#moduleItemForm button {
     }
 }
 
-
-
 .wrapper {
   flex: 1;
   font-size: 12px;
   max-width: 1536px;
   margin: 0 auto 2em;
-  margin-top: 70px;
 }
 
 @media (max-width: 600px) {
@@ -154,7 +151,6 @@ form#moduleItemForm button {
 .header-content {
   display: flex;
   flex-direction: row;
-  max-width: 1536px;
   width: 100%;
 }
 
@@ -165,7 +161,6 @@ form#moduleItemForm button {
 .navbar1 {
   display: flex;
   flex-direction: row;
-  max-width: 1536px;
   width: 100%;
   list-style: none;
   padding: 0;
@@ -186,6 +181,10 @@ form#moduleItemForm button {
   border-radius: 0px 0px 10px 10px;
   border-top: none;
   color:white;
+}
+
+.navbar_link:hover {
+  color:black;
 }
 
 .burger {
@@ -217,11 +216,7 @@ form#moduleItemForm button {
   .navbar_link{
     display: inline-block;
     padding: 0px 5px 0px 5px;
-    background-color: rgb(159, 122, 189,0.9);
-    border: 2px solid rgba(240, 240, 240, 0.7);
-    border-top: none;
     border-radius: 0px;
-    color:white;
     width: 100%;
   }
 }
@@ -275,7 +270,6 @@ form#moduleItemForm button {
 
 .link-box:hover {
   background-color: rgba(240, 240, 240, 0.8);
-
   color: #000000;
 }
 
