@@ -225,10 +225,6 @@ form#moduleItemForm button {
   background-color: rgba(240, 240, 240, 0.6);
 }
 
-.navbar ul li:last-child {
-  margin-right: 0;
-}
-
 .user {
   margin-top: 0px;
   display: flex;
