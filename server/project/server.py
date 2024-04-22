@@ -144,7 +144,13 @@ def register():
 
 @app.route('/get_semester_list')
 def get_semester_list():
-    semester_list = manager.untis_handler.get_all_semesters()
+    semester_list = []
+    semesters = manager.untis_handler.get_all_semesters()
+    additional_calendars = manager.netloader.get_all_names()
+
+    for id, name in enumerate(semesters.extend(additional_calendars)):
+        semester_list.append({"id": str(id), "name": name})
+
     if current_user.semesters:
         selection = json.loads(current_user.semesters)
         for i in semester_list:

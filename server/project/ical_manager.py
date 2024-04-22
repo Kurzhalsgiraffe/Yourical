@@ -150,11 +150,8 @@ class UntisHandler:
         return schoolyear
 
     def get_all_semesters(self):
-        semester_list = []
-        semesters = self.data.get("semesters") # + ["vdi", "sia"]
-        for semester_id, semester_name in enumerate(semesters):
-            semester_list.append({"id": str(semester_id), "name": semester_name})
-        return semester_list
+        semesters = self.data.get("semesters")
+        return semesters
 
     def get_module_list_of_semesters(self, semesters:str):
         _set = set()
@@ -224,6 +221,8 @@ class Netloader:
 
 
     def icals_to_event_list(self):
+        self.data["timetables"] = {}
+        self.data["names"] = []
         netloader_json={}
         additional_calendars = self.config.get_config("additional_calendars")
         for name, url in additional_calendars.items():
@@ -255,17 +254,17 @@ class Netloader:
                     eventlist.append(event)
             netloader_json[name]=eventlist
 
-        #self.data["module_lists"] = {}
-        self.data["timetables"] = {}
-        self.data["semesters"] = []
-
         for name, events in netloader_json.items():
-            #self.data["module_lists"][name]=[]
-            #self.data["module_lists"][name].append(name)
             self.data["timetables"][name]=events
-            self.data["semesters"].append(name)
+            self.data["names"].append(name)
         self.save_as_json()
 
+    def get_all_names(self):
+        lst = []
+        names = self.data.get("names")
+        for id, name in enumerate(names):
+            lst.append({"id": str(id), "name": name})
+        return lst
 
 class IcalManager:
     def __init__(self, config_file:str) -> None:
@@ -280,8 +279,8 @@ class IcalManager:
             self.create_ical(user, events[user])
 
     def generate_single_ical(self, user):
-        event = self.get_all_events_from_database(user=user)
-        self.create_ical(user, event[user])
+        events = self.get_all_events_from_database(user=user)
+        self.create_ical(user, events[user])
 
     def create_ical(self, user, events:list[dict]):
         cal = Calendar()
@@ -322,7 +321,7 @@ class IcalManager:
                 data = cursor.execute(sql).fetchall()
             conn.close()
 
-            for entry in data:
+            for entry in data: # TODO: EXTRA DB SPALTE: ADDITIONAL_CALENDARS
                 if entry:
                     try:
                         username = entry[0]
