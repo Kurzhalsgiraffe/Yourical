@@ -1,10 +1,9 @@
 $(document).ready(function () {
-    $(document).ready(function () {
-        var burger = $('#id_burger');
+    var burger = $('#id_burger');
+    var navbar = $('#id_navbar');
 
-        burger.click(function() {
-            var navbar = $('#id_navbar');
-            navbar.toggle(); // Toggle between display block and none
-        });
+    burger.click(function() {
+        navbar.toggle();
+        burger.toggleClass('open');
     });
 });
