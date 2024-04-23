@@ -145,34 +145,18 @@ def register():
 
 # ------ Functional Routes  ------
 
-@app.route('/get_semester_list') # TODO: Mach eine große Funktion im Manager draus
+@app.route('/get_semester_list')
 def get_semester_list():
-    lst = []
-    semester_list = []
-    semesters = manager.untis_handler.get_all_semesters()
-    additional_calendars = manager.netloader.get_all_names()
-
-    if semesters is not None:
-        lst.extend(semesters)
-
-    if additional_calendars is not None:
-        lst.extend(additional_calendars)
-
-    for id, name in enumerate(lst):
-        semester_list.append({"id": str(id), "name": name})
-
-    if current_user.semesters:
-        selected_semesters = json.loads(current_user.semesters)
-        selected_additionals = json.loads(current_user.additional_calendars)
-        for i in semester_list:
-            i["selected"] = i["name"] in selected_semesters or i["name"] in selected_additionals
+    selected_semesters = json.loads(current_user.semesters) if current_user.semesters else None
+    selected_additionals = json.loads(current_user.additional_calendars) if current_user.additional_calendars else None
+    semester_list = manager.get_semester_list(selected_semesters=selected_semesters, selected_additionals=selected_additionals)
     return jsonify(semester_list)
 
 @app.route('/process_semester_selection', methods=['POST'])
 @login_required
 def process_semester_selection():
     selected_items = request.form.getlist('selected_items')
-    additional_calendars = [value for value in selected_items if value in manager.netloader.get_all_names()]
+    additional_calendars = [value for value in selected_items if value in manager.netloader.data.get("names")]
 
     additional = [item for item in selected_items if item in additional_calendars]
     semesters = [item for item in selected_items if item not in additional_calendars]
@@ -253,7 +237,9 @@ def serve_vdi():
 @scheduler.task('interval', id='update_calendars', seconds=manager.config.get_config("seconds_between_calendar_updates"), misfire_grace_time=900)
 def update_calendars():
     manager.untis_handler.update_schoolyear_from_untis()
-    manager.untis_handler.update_all_tables_from_untis() # TODO: Netloader einbinden
+    manager.untis_handler.update_all_tables_from_untis()
+    manager.netloader.download_additional_calendars()
+    manager.netloader.icals_to_event_list()
     manager.generate_all_icals()
 
 ## ----- MAIN ----- ##

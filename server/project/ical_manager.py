@@ -149,10 +149,6 @@ class UntisHandler:
         schoolyear = self.data.get("schoolyear")
         return schoolyear
 
-    def get_all_semesters(self):
-        semesters = self.data.get("semesters")
-        return semesters
-
     def get_module_list_of_semesters(self, semesters:str):
         _set = set()
         modules = []
@@ -190,10 +186,10 @@ class Netloader:
         try:
             with open(self.save_file, "r", encoding="utf-8") as file:
                 self.data = json.load(file)
-                if "calendars" not in self.data: # TODO
+                if "timetables" not in self.data or "names" not in self.data:
                     raise ValueError()
         except (json.JSONDecodeError, FileNotFoundError, OSError, ValueError) as e:
-            self.download_calendars()
+            self.download_additional_calendars()
             self.icals_to_event_list()
 
     def save_as_json(self):
@@ -207,7 +203,7 @@ class Netloader:
         except FileNotFoundError:
             print("Couldn't write logmessage into netloader.log")
 
-    def download_calendars(self):
+    def download_additional_calendars(self):
         additional_calendars = self.config.get_config("additional_calendars")
 
         for name, url in additional_calendars.items():
@@ -260,10 +256,6 @@ class Netloader:
             self.data["timetables"][name]=events
             self.data["names"].append(name)
         self.save_as_json()
-
-    def get_all_names(self):
-        names = self.data.get("names")
-        return names
 
     def get_events_from_calendars(self, additional_calendars):
         events = []
@@ -355,6 +347,25 @@ class IcalManager:
 
         except sqlite3.Error as err:
             print(err, traceback.format_exc())
+
+    def get_semester_list(self, selected_semesters, selected_additionals):
+        lst = []
+        semester_list = []
+        semesters = self.untis_handler.data.get("semesters")
+        additional_calendars = self.netloader.data.get("names")
+
+        if semesters is not None:
+            lst.extend(semesters)
+        if additional_calendars is not None:
+            lst.extend(additional_calendars)
+
+        if lst:
+            for id, name in enumerate(lst):
+                semester_list.append({"id": str(id), "name": name})
+            for i in semester_list:
+                i["selected"] = (selected_semesters is not None and i["name"] in selected_semesters) or (selected_additionals is not None and i["name"] in selected_additionals)
+
+        return semester_list
 
 # ---------- LOG ----------
 
