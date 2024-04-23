@@ -157,8 +157,11 @@ class UntisHandler:
         _set = set()
         modules = []
         module_lists = self.data.get("module_lists")
-        for sem in semesters:
-            _set.update(module_lists.get(sem))
+        if module_lists:
+            for sem in semesters:
+                m = module_lists.get(sem)
+                if m:
+                    _set.update(m)
         for module_id, module_name in enumerate(sorted(list(_set))):
             modules.append({"id": str(module_id), "name": module_name})
         return modules
@@ -219,7 +222,6 @@ class Netloader:
             else:
                 self.log(name + "HTTP != 200")
 
-
     def icals_to_event_list(self):
         self.data["timetables"] = {}
         self.data["names"] = []
@@ -262,6 +264,16 @@ class Netloader:
     def get_all_names(self):
         names = self.data.get("names")
         return names
+
+    def get_events_from_calendars(self, additional_calendars):
+        events = []
+        timetables = self.data.get("timetables")
+        for cal in additional_calendars:
+            if cal in timetables:
+                for event in timetables[cal]:
+                    if event:
+                        events.append(event)
+        return events
 
 class IcalManager:
     def __init__(self, config_file:str) -> None:
@@ -311,25 +323,32 @@ class IcalManager:
 
             data = []
             if user:
-                sql = "SELECT username, semesters, modules FROM user WHERE username=?"
+                sql = "SELECT username, semesters, modules, additional_calendars FROM user WHERE username=?"
                 data = cursor.execute(sql,(user,)).fetchall()
             else:
-                sql = "SELECT username, semesters, modules FROM user"
+                sql = "SELECT username, semesters, modules, additional_calendars FROM user"
                 data = cursor.execute(sql).fetchall()
             conn.close()
 
-            for entry in data: # TODO: EXTRA DB SPALTE: ADDITIONAL_CALENDARS
+            for entry in data:
                 if entry:
                     try:
                         username = entry[0]
                         semesters_json = entry[1]
                         modules_json = entry[2]
+                        additional_calendars_json = entry[3]
+
+                        events[username] = []
 
                         if semesters_json and modules_json:
                             modules = json.loads(modules_json)
                             semesters = json.loads(semesters_json)
+                            events[username].extend(self.untis_handler.get_events_from_modules(semesters=semesters, modules=modules))
 
-                            events[username] = self.untis_handler.get_events_from_modules(semesters=semesters, modules=modules)
+                        if additional_calendars_json:
+                            additional_calendars = json.loads(additional_calendars_json)
+                            events[username].extend(self.netloader.get_events_from_calendars(additional_calendars=additional_calendars))
+
                     except json.JSONDecodeError as json_err:
                         print(f"Error parsing JSON for user {username}: {json_err}")
             return events

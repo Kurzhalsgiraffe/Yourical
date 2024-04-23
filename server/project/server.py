@@ -145,7 +145,7 @@ def register():
 
 # ------ Functional Routes  ------
 
-@app.route('/get_semester_list')
+@app.route('/get_semester_list') # TODO: Mach eine große Funktion im Manager draus
 def get_semester_list():
     lst = []
     semester_list = []
@@ -162,18 +162,24 @@ def get_semester_list():
         semester_list.append({"id": str(id), "name": name})
 
     if current_user.semesters:
-        selection = json.loads(current_user.semesters)
+        selected_semesters = json.loads(current_user.semesters)
+        selected_additionals = json.loads(current_user.additional_calendars)
         for i in semester_list:
-            i["selected"] = i["name"] in selection
+            i["selected"] = i["name"] in selected_semesters or i["name"] in selected_additionals
     return jsonify(semester_list)
 
 @app.route('/process_semester_selection', methods=['POST'])
 @login_required
 def process_semester_selection():
     selected_items = request.form.getlist('selected_items')
+    additional_calendars = [value for value in selected_items if value in manager.netloader.get_all_names()]
+
+    additional = [item for item in selected_items if item in additional_calendars]
+    semesters = [item for item in selected_items if item not in additional_calendars]
 
     if current_user.is_authenticated:
-        current_user.semesters = json.dumps(selected_items)
+        current_user.semesters = json.dumps(semesters)
+        current_user.additional_calendars = json.dumps(additional)
         db.session.commit()
         return jsonify({"message": "Selection saved"}), 200
     else:
