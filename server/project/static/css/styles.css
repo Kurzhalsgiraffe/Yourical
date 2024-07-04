@@ -205,8 +205,8 @@ form#moduleItemForm button {
 .navbar_link{
   display: inline-block;
   list-style: none;
-  background-color: rgb(159, 122, 189,0.9);
-  border: 2px solid rgba(240, 240, 240, 0.7);
+  background-color: rgb(159, 122, 189);
+  border: 2px solid rgba(240, 240, 240);
   border-top: none;
   color:white;
 }
@@ -243,7 +243,7 @@ form#moduleItemForm button {
 }
 
 .navbar_link:hover{
-  background-color: rgba(240, 240, 240, 0.6);
+  background-color: rgba(240, 240, 240);
 }
 
 .center-text {
