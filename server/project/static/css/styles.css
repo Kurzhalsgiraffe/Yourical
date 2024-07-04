@@ -26,9 +26,10 @@ p {
   font-size: 96px;
   color: white;
   opacity: 0.8;
-  position: relative;  /* Ensure the element is positioned */
+  position: relative;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
   pointer-events: none; /* Allow clicks to pass through */
+  z-index: -10;
 }
 
 .links-container {
@@ -205,8 +206,8 @@ form#moduleItemForm button {
 .navbar_link{
   display: inline-block;
   list-style: none;
-  background-color: rgb(159, 122, 189);
-  border: 2px solid rgba(240, 240, 240);
+  background-color: rgb(159, 122, 189,0.9);
+  border: 2px solid rgba(240, 240, 240, 0.7);
   border-top: none;
   color:white;
 }
@@ -243,7 +244,7 @@ form#moduleItemForm button {
 }
 
 .navbar_link:hover{
-  background-color: rgba(240, 240, 240);
+  background-color: rgba(240, 240, 240, 0.6);
 }
 
 .center-text {
