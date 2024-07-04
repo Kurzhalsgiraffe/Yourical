@@ -164,7 +164,6 @@ form#moduleItemForm button {
   padding: 10px;
   top: 10px;
   left: 10px;
-  z-index: 9999;
   cursor: pointer;
   width: 50px;  /* Ensure a larger clickable area */
   height: 50px; /* Ensure a larger clickable area */
