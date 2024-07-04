@@ -26,7 +26,6 @@ p {
   font-size: 96px;
   color: white;
   opacity: 0.8;
-  user-select: none;
   text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
 }
 
