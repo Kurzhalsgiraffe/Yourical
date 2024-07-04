@@ -26,7 +26,9 @@ p {
   font-size: 96px;
   color: white;
   opacity: 0.8;
+  position: relative;  /* Ensure the element is positioned */
   text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+  pointer-events: none; /* Allow clicks to pass through */
 }
 
 .links-container {
