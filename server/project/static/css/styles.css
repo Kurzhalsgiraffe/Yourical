@@ -166,13 +166,17 @@ form#moduleItemForm button {
   left: 10px;
   z-index: 9999;
   cursor: pointer;
+  width: 50px;  /* Ensure a larger clickable area */
+  height: 50px; /* Ensure a larger clickable area */
+  background-color: rgba(0, 0, 0, 0.7); /* Improve visibility */
+  border-radius: 5px;
 }
 
 .burger .line {
   width: 30px;
   height: 4px;
   background-color: #fff;
-  margin: 5px auto;
+  margin: 6px auto;
   transition: all 0.3s ease-in-out;
 }
 
@@ -217,7 +221,7 @@ form#moduleItemForm button {
   }
 
   .navbar_link{
-    padding: 5px;
+    padding: 10px;
     border-radius: 0px;
     width: 100%;
   }
