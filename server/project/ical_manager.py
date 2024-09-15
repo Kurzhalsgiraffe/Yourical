@@ -116,31 +116,32 @@ class UntisHandler:
 
         with self.get_untis_session().login() as session:
             for klasse in session.klassen():
-                semesters.append(klasse.name)
-                module_list = set()
-                timetable = []
-                table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
-                for _, row in table:
-                    for _, periods in row:
-                        if periods:
-                            for period in periods:
-                                for subject in period.subjects:
-                                    module_list.add(subject.long_name)
-                                    rooms = []
-                                    try:
-                                        rooms = [i.name for i in period.rooms]
-                                    except IndexError: # For some unknown reason, period.rooms is not found sometimes (correlates with "ro": {"id": 0}) --> Dirty fix: catch it and dont care about the room
-                                        rooms = ["None"]
-                                    timetable.append({
-                                        'name': subject.long_name,
-                                        'start': period.start.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'start') else None,
-                                        'end': period.end.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'end') else None,
-                                        'rooms': rooms,
-                                        'status': period.code if hasattr(period, 'code') else None
-                                    })
-                self.data["module_lists"][klasse.name] = list(module_list)
-                self.data["timetables"][klasse.name] = timetable
-            self.data["semesters"] = sorted(semesters)
+                if klasse:
+                    semesters.append(klasse.name)
+                    module_list = set()
+                    timetable = []
+                    table = session.timetable_extended(klasse=klasse, start=start_date, end=end_date).to_table()
+                    for _, row in table:
+                        for _, periods in row:
+                            if periods:
+                                for period in periods:
+                                    for subject in period.subjects:
+                                        module_list.add(subject.long_name)
+                                        rooms = []
+                                        try:
+                                            rooms = [i.name for i in period.rooms]
+                                        except IndexError: # For some unknown reason, period.rooms is not found sometimes (correlates with "ro": {"id": 0}) --> Dirty fix: catch it and dont care about the room
+                                            rooms = ["None"]
+                                        timetable.append({
+                                            'name': subject.long_name,
+                                            'start': period.start.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'start') else None,
+                                            'end': period.end.strftime('%Y-%m-%d %H:%M:%S') if hasattr(period, 'end') else None,
+                                            'rooms': rooms,
+                                            'status': period.code if hasattr(period, 'code') else None
+                                        })
+                    self.data["module_lists"][klasse.name] = list(module_list)
+                    self.data["timetables"][klasse.name] = timetable
+                self.data["semesters"] = sorted(semesters)
         self.save_as_json()
 
 # ---------- ACCESS METHODS ----------
