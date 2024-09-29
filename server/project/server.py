@@ -133,9 +133,11 @@ def register():
                 flash('- Passwords do not match.', 'error')
         else:
             if form.validate_on_submit():
+                now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
                 new_user = User(username=username, password=hashed_password, semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_pull="")
-                new_user.register_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                new_user.register_date = now
+                new_user.last_login = now
                 db.session.add(new_user)
                 db.session.commit()
                 flash('- Registration successful. You can now log in.', 'success')
