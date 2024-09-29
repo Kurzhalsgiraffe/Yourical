@@ -245,5 +245,4 @@ def update_calendars():
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    update_calendars()
     app.run(host="127.0.0.1", debug=True)
