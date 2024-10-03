@@ -43,6 +43,7 @@ class User(db.Model, UserMixin):
     additional_calendars = db.Column(db.TEXT)
     register_date = db.Column(db.TEXT)
     last_login = db.Column(db.TEXT)
+    last_calendar_update = db.Column(db.TEXT)
     last_calendar_pull = db.Column(db.TEXT)
 
 class RegisterForm(FlaskForm):
@@ -135,7 +136,7 @@ def register():
             if form.validate_on_submit():
                 now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_pull="")
+                new_user = User(username=username, password=hashed_password, semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_update="", last_calendar_pull="")
                 new_user.register_date = now
                 new_user.last_login = now
                 db.session.add(new_user)

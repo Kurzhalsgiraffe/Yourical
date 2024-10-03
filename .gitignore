@@ -3,7 +3,6 @@
 *.pem
 *.key
 __pycache__
-instance
 calendars
 config
 logs

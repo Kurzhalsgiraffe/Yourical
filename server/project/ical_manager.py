@@ -305,7 +305,7 @@ class IcalManager:
         ical_data =  cal.to_ical()
         with open(f'calendars/{user}.calendar.ics', 'wb') as f:
             f.write(ical_data)
-        self.log_ical_update(user)
+        self.log_ical_update(user) # Replace by Database Update
 
     def get_all_events_from_database(self, user=None):
         dbfile = self.config.get_config("database_path")
