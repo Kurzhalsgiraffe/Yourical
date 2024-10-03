@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from icalendar import Calendar, Event, Timezone
 import pytz
 
-
 class Config:
     def __init__(self, config_file:str) -> None:
         self.config_file = config_file
@@ -305,7 +304,23 @@ class IcalManager:
         ical_data =  cal.to_ical()
         with open(f'calendars/{user}.calendar.ics', 'wb') as f:
             f.write(ical_data)
-        self.log_ical_update(user) # Replace by Database Update
+
+        dbfile = self.config.get_config("database_path")
+        try:
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            conn = sqlite3.connect(dbfile, check_same_thread=False)
+            cursor = conn.cursor()
+
+            sql = "UPDATE user SET last_calendar_update=? WHERE username=?"
+            cursor.execute(sql,(now, user))
+            conn.commit()
+        except sqlite3.Error as err:
+            print(err, traceback.format_exc())
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
 
     def get_all_events_from_database(self, user=None):
         dbfile = self.config.get_config("database_path")
@@ -368,17 +383,12 @@ class IcalManager:
 
         return semester_list
 
-# ---------- LOG ----------
+# ---------- LOGGING ----------
 
     def log_ical_request(self, ip_address, user):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         with open(self.config.get_config("ical_logfile"), "a") as log_file:
             log_file.write(f"{timestamp}: '{ip_address}' requested calendar for '{user}'\n")
-
-    def log_ical_update(self, user):
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        with open(self.config.get_config("ical_logfile"), "a") as log_file:
-            log_file.write(f"{timestamp}: updated/created calendar for '{user}'\n")
 
     def log_login(self, user):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
