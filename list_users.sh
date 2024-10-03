@@ -9,6 +9,7 @@ SELECT id,
        username,
        register_date,
        last_login,
+       last_calendar_update,
        last_calendar_pull,
        ROUND(julianday('now') - julianday(last_calendar_pull), 2) AS days_since_last_pull
 FROM user;"
