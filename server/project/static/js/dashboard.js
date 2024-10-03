@@ -27,17 +27,50 @@ function updateSemesterListItems(data) {
     });
 }
 
-function submitSemesterForm() {
+$("#semesterSearchInput").on("input", function() {
+    var searchTerm = $("#semesterSearchInput").val().trim().toLowerCase();
+    $('#semesterItemTable input[type="checkbox"]').each(function() {
+        var checkbox = $(this);
+        if (checkbox.val().toLowerCase().includes(searchTerm)) {
+            checkbox.parent().show();
+        } else {
+            checkbox.parent().hide();
+        }
+    });
+});
+
+$("#semesterItemForm").submit(function (event) {
+    event.preventDefault();
     var formData = $("#semesterItemForm").serialize();
-    $.post("/process_semester_selection", formData, function (response) {
-        $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
+    $.post("/submit_semester_selection", formData, function (response) {
+        $("#semesterItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+        $("#semesterItemFormAlert").text("Semester selection saved");
         fetchModuleListItems();
     }).fail(function(xhr, status, error) {
         var errorMessage = JSON.parse(xhr.responseText).message;
+        $("#semesterItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+        $("#semesterItemFormAlert").text(errorMessage);
         console.log("Error: " + errorMessage);
     });
+    $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
     return false;
-}
+});
+
+$("#resetSemesterButton").click(function () {
+    document.getElementById("semesterItemForm").reset();
+    $.post("/reset_semester_selection", function (response) {
+        $("#semesterItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+        $("#semesterItemFormAlert").text("Semester selection reset");
+        fetchModuleListItems();
+        load_ical_events();
+    }).fail(function(xhr, status, error) {
+        var errorMessage = JSON.parse(xhr.responseText).message;
+        $("#semesterItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+        $("#semesterItemFormAlert").text(errorMessage);
+        console.log("Error: " + errorMessage);
+    });
+    $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
+});
 
 function fetchModuleListItems() {
     $.get("/get_module_list", function (data) {
@@ -66,53 +99,51 @@ function updateModuleListItems(data) {
     });
 }
 
-function submitModuleForm() {
+$("#moduleSearchInput").on("input", function() {
+    var searchTerm = $("#moduleSearchInput").val().trim().toLowerCase();
+    $('#moduleItemTable input[type="checkbox"]').each(function() {
+        var checkbox = $(this);
+        if (checkbox.val().toLowerCase().includes(searchTerm)) {
+            checkbox.parent().show();
+        } else {
+            checkbox.parent().hide();
+        }
+    });
+});
+
+$("#moduleItemForm").submit(function (event) {
+    event.preventDefault();
     var formData = $("#moduleItemForm").serialize();
-    $.post("/process_module_selection", formData, function (response) {
-        $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
-        load_events();
+    $.post("/submit_module_selection", formData, function (response) {
+        $("#moduleItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+        $("#moduleItemFormAlert").text("Modules saved, calendar created");
+        load_ical_events();
     }).fail(function(xhr, status, error) {
         var errorMessage = JSON.parse(xhr.responseText).message;
+        $("#moduleItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+        $("#moduleItemFormAlert").text(errorMessage);
         console.log("Error: " + errorMessage);
     });
+    $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
     return false;
-}
+});
+
+$("#resetModuleButton").click(function () {
+    document.getElementById("moduleItemForm").reset();
+    $.post("/reset_module_selection", function (response) {
+        $("#moduleItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+        $("#moduleItemFormAlert").text("Modules reset, calendar reset");
+        load_ical_events();
+    }).fail(function(xhr, status, error) {
+        var errorMessage = JSON.parse(xhr.responseText).message;
+        $("#moduleItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+        $("#moduleItemFormAlert").text(errorMessage);
+        console.log("Error: " + errorMessage);
+    });
+    $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
+});
 
 $(document).ready(function () {
     fetchSemesterListItems();
     fetchModuleListItems();
-    $("#semesterItemForm").submit(submitSemesterForm);
-    $("#moduleItemForm").submit(submitModuleForm);
-});
-
-
-
-document.addEventListener('input', function() {
-    var searchInput = document.getElementById('searchInput');
-    var checkboxes = document.querySelectorAll('#semesterItemTable input[type="checkbox"]');
-
-    searchInput.addEventListener('input', function() {
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.value.toLowerCase().includes(searchInput.value.toLowerCase())) {
-                checkbox.parentElement.style.display = '';
-            } else {
-                checkbox.parentElement.style.display = 'none';
-            }
-        });
-    });
-});
-
-document.addEventListener('input', function() {
-    var searchInput = document.getElementById('searchInput1');
-    var checkboxes = document.querySelectorAll('#moduleItemTable input[type="checkbox"]');
-
-    searchInput.addEventListener('input', function() {
-        checkboxes.forEach(function(checkbox) {
-            if (checkbox.value.toLowerCase().includes(searchInput.value.toLowerCase())) {
-                checkbox.parentElement.style.display = '';
-            } else {
-                checkbox.parentElement.style.display = 'none';
-            }
-        });
-    });
 });

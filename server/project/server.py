@@ -157,9 +157,9 @@ def get_semester_list():
     semester_list = manager.get_semester_list(selected_semesters=selected_semesters, selected_additionals=selected_additionals)
     return jsonify(semester_list)
 
-@app.route('/process_semester_selection', methods=['POST'])
+@app.route('/submit_semester_selection', methods=['POST'])
 @login_required
-def process_semester_selection():
+def submit_semester_selection():
     selected_items = request.form.getlist('selected_items')
     additional_calendars = [value for value in selected_items if value in manager.netloader.data.get("names")]
 
@@ -171,6 +171,21 @@ def process_semester_selection():
         current_user.additional_calendars = json.dumps(additional)
         db.session.commit()
         return jsonify({"message": "Selection saved"}), 200
+    else:
+        print("User is not authenticated")
+        return jsonify({"message": "User is not authenticated"}), 401
+
+@app.route('/reset_semester_selection', methods=['POST'])
+@login_required
+def reset_semester_selection():
+    additional = []
+    semesters = []
+    if current_user.is_authenticated:
+        current_user.semesters = json.dumps(semesters)
+        current_user.additional_calendars = json.dumps(additional)
+        db.session.commit()
+        reset_module_selection()
+        return jsonify({"message": "Semesters reset"}), 200
     else:
         print("User is not authenticated")
         return jsonify({"message": "User is not authenticated"}), 401
@@ -188,9 +203,9 @@ def get_module_list():
                 i["selected"] = i["name"] in selection
     return jsonify(all_modules)
 
-@app.route('/process_module_selection', methods=['POST'])
+@app.route('/submit_module_selection', methods=['POST'])
 @login_required
-def process_module_selection():
+def submit_module_selection():
     selected_items = request.form.getlist('selected_items')
 
     if current_user.is_authenticated:
@@ -198,6 +213,19 @@ def process_module_selection():
         db.session.commit()
         manager.generate_single_ical(current_user.username)
         return jsonify({"message": "Selection saved"}), 200
+    else:
+        print("User is not authenticated")
+        return jsonify({"message": "User is not authenticated"}), 401
+
+@app.route('/reset_module_selection', methods=['POST'])
+@login_required
+def reset_module_selection():
+    selected_items = []
+    if current_user.is_authenticated:
+        current_user.modules = json.dumps(selected_items)
+        db.session.commit()
+        manager.generate_single_ical(current_user.username)
+        return jsonify({"message": "Selection reset"}), 200
     else:
         print("User is not authenticated")
         return jsonify({"message": "User is not authenticated"}), 401

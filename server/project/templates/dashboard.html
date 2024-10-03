@@ -21,18 +21,19 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="searchInput" placeholder="Filter..." class="searchInput">
+            <input type="text" id="semesterSearchInput" placeholder="Filter..." class="searchInput">
         </div>
         <form id="semesterItemForm">
             <table id="semesterItemTable" class="itemTable">
                 <!-- Selection elements will be dynamically added here -->
             </table>
-            <button type="submit" id="submitsemesterButton">Submit</button>
+            <div class="button-container">
+                <button type="submit" id="submitSemesterButton">Submit</button>
+                <button type="button" id="resetSemesterButton">Reset</button>
+            </div>
         </form>
         <div class="alertContainer mt-2">
-            <div class="alert alert-success center-text" role="alert" id="semesterItemFormAlert" style="display: none;">
-                Semester selection saved
-            </div>
+            <div class="alert center-text" role="alert" id="semesterItemFormAlert" style="display: none;"></div>
         </div>
     </div>
     <div class="center-text mt-1">
@@ -42,18 +43,19 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="searchInput1" placeholder="Filter..." class="searchInput">
+            <input type="text" id="moduleSearchInput" placeholder="Filter..." class="searchInput">
         </div>
         <form id="moduleItemForm">
             <table id="moduleItemTable" class="itemTable">
                 <!-- Selection elements will be dynamically added here -->
             </table>
-            <button type="submit" id="submitmoduleButton">Submit</button>
+            <div class="button-container">
+                <button type="submit" id="submitModuleButton">Submit</button>
+                <button type="button" id="resetModuleButton">Reset</button>
+            </div>
         </form>
         <div class="alertContainer mt-2">
-            <div class="alert alert-success" role="alert" id="moduleItemFormAlert" style="display: none;">
-                Modules saved, calendar created
-            </div>
+            <div class="alert center-text" role="alert" id="moduleItemFormAlert" style="display: none;"></div>
         </div>
     </div>
     <div class="center-text mt-1">

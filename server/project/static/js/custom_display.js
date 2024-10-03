@@ -11,7 +11,7 @@ function data_req(url, callback) {
     req.send();
 }
 
-function load_events() {
+function load_ical_events() {
     $('#calendar').fullCalendar('removeEvents');
 
     var sources_to_load_cnt = ics_sources.length;
@@ -107,5 +107,5 @@ $(document).ready(function() {
         }
     });
 
-    load_events();
+    load_ical_events();
 });
