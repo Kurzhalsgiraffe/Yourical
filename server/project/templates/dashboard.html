@@ -58,15 +58,17 @@
     </div>
     <div class="center-text mt-1">
         <h1 style="color:red;">Erst lesen, dann Link!!</h1>
-        <h5>Dieser Link ist ein URL-Kalenderabonnement und sollte bei Google Calendar, Apple Calendar und allen Anderen als Import-per-URL eingepflegt werden.
-        NICHT die "username.calender.ics" herunterladen und "abonnieren", Ausfälle und Kurswahlen werden ansonsten nicht aktualisiert. Ihr müsst den Link selbst im Kalender abspeichern!</h5>
+        <h5>Dieser Link ist ein URL-Kalenderabonnement und sollte in Google Calendar, Apple Calendar und ähnlichen Diensten per URL-Import hinzugefügt werden.</h5>
+        <h5><span style="color:red;">NICHT</span> die "{{ current_user.username }}.calender.ics" herunterladen und "abonnieren", ansonsten Ausfälle wird der Kalender nicht aktualisiert.</h5>
+        <h5>Ihr müsst den Link selbst im Kalender abspeichern!</h5>
         <h4><a href="/faq" class="link">Anleitung / FAQ</a></h4>
         <h5>&darr; Dein Link &darr;</h5>
         <div class="my-3">
             <a href="/ical/{{ current_user.username }}" class="link-box" onclick="copyLink(event)">{{ domain }}/ical/{{ current_user.username }}</a>
         </div>
-        <h5>Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Ausfälle verpasst. <br>
-        Der Link bleibt gleich.</h5>
+        <h5>Wir aktualisieren deinen Kalender 2 mal pro Stunde damit du keine Ausfälle verpasst.</h5>
+        <h5>Der Link ändert sich nicht.</h5>
+        <h5 class="mb-5">Dein Kalender wurde zuletzt am <span style="color: #db7093;">{{ last_calendar_update }}</span> aktualisiert</h5>
     </div>
 
     <div id='calendar' data-username="{{ current_user.username }}"></div>

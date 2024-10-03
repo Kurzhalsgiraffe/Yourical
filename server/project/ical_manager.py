@@ -9,6 +9,13 @@ from datetime import datetime, timedelta
 from icalendar import Calendar, Event, Timezone
 import pytz
 
+def sql_error_handler(err,trace):
+    """Print Errors that can occurr in the DB Methods"""
+    print(f"SQLite error: {err.args}")
+    print("Exception class is: ", err.__class__)
+    print("SQLite traceback: ")
+    print(trace)
+
 class Config:
     def __init__(self, config_file:str) -> None:
         self.config_file = config_file
@@ -66,6 +73,64 @@ class Config:
         config = self.read_config_file()
         config[key] = value
         self.write_config_file(config)
+
+class Dao:
+    def __init__(self, dbfile:str) -> None:
+        try:
+            sqlite3.threadsafety = 1
+            self.dbfile = dbfile
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+
+    def get_db_connection(self) -> tuple[sqlite3.Connection, sqlite3.Cursor]:
+        """Get a connection to the database"""
+        try:
+            conn = sqlite3.connect(self.dbfile, check_same_thread=False)
+            cursor = conn.cursor()
+            return conn, cursor
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+
+    def get_all_events_from_database(self, user=None) -> list:
+        try:
+            data = []
+            conn, cursor = self.get_db_connection()
+            if user:
+                sql = "SELECT username, semesters, modules, additional_calendars FROM user WHERE username=?"
+                data = cursor.execute(sql,(user,)).fetchall()
+            else:
+                sql = "SELECT username, semesters, modules, additional_calendars FROM user"
+                data = cursor.execute(sql).fetchall()
+            conn.close()
+            return data
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+            return None
+
+    def set_last_calendar_update(self, user) -> None:
+        try:
+            conn, cursor = self.get_db_connection()
+            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            sql = "UPDATE user SET last_calendar_update=? WHERE username=?"
+            cursor.execute(sql,(now, user))
+            conn.commit()
+            conn.close()
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+
+    def get_last_calendar_update(self, user) -> None:
+        try:
+            conn, cursor = self.get_db_connection()
+            sql = "SELECT last_calendar_update FROM user WHERE username=?"
+            last_calendar_update = cursor.execute(sql,(user,)).fetchone()
+            conn.close()
+            if last_calendar_update:
+                return last_calendar_update[0]
+            else:
+                return None
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+            return None
 
 class UntisHandler:
     def __init__(self, save_file:str, config:Config) -> None:
@@ -270,17 +335,18 @@ class Netloader:
 class IcalManager:
     def __init__(self, config_file:str) -> None:
         self.config = Config(config_file=config_file)
+        self.database = Dao(dbfile=self.config.get_config("database_path"))
         self.untis_handler = UntisHandler(save_file="instance/untis_data.json", config=self.config) #TODO: zur Config
         self.netloader = Netloader(save_file="instance/netloader.json", config=self.config)
         self.generate_all_icals()
 
     def generate_all_icals(self):
-        events = self.get_all_events_from_database(user=None)
+        events = self.get_all_events(user=None)
         for user in events:
             self.create_ical(user, events[user])
 
     def generate_single_ical(self, user):
-        events = self.get_all_events_from_database(user=user)
+        events = self.get_all_events(user=user)
         self.create_ical(user, events[user])
 
     def create_ical(self, user, events:list[dict]):
@@ -305,64 +371,34 @@ class IcalManager:
         with open(f'calendars/{user}.calendar.ics', 'wb') as f:
             f.write(ical_data)
 
-        dbfile = self.config.get_config("database_path")
-        try:
-            now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            conn = sqlite3.connect(dbfile, check_same_thread=False)
-            cursor = conn.cursor()
+        self.database.set_last_calendar_update(user)
 
-            sql = "UPDATE user SET last_calendar_update=? WHERE username=?"
-            cursor.execute(sql,(now, user))
-            conn.commit()
-        except sqlite3.Error as err:
-            print(err, traceback.format_exc())
-        finally:
-            if cursor:
-                cursor.close()
-            if conn:
-                conn.close()
-
-    def get_all_events_from_database(self, user=None):
-        dbfile = self.config.get_config("database_path")
+    def get_all_events(self, user=None):
         events = dict()
-        try:
-            conn = sqlite3.connect(dbfile, check_same_thread=False)
-            cursor = conn.cursor()
+        data = self.database.get_all_events_from_database(user)
 
-            data = []
-            if user:
-                sql = "SELECT username, semesters, modules, additional_calendars FROM user WHERE username=?"
-                data = cursor.execute(sql,(user,)).fetchall()
-            else:
-                sql = "SELECT username, semesters, modules, additional_calendars FROM user"
-                data = cursor.execute(sql).fetchall()
-            conn.close()
+        for entry in data:
+            if entry:
+                try:
+                    username = entry[0]
+                    semesters_json = entry[1]
+                    modules_json = entry[2]
+                    additional_calendars_json = entry[3]
 
-            for entry in data:
-                if entry:
-                    try:
-                        username = entry[0]
-                        semesters_json = entry[1]
-                        modules_json = entry[2]
-                        additional_calendars_json = entry[3]
+                    events[username] = []
 
-                        events[username] = []
+                    if semesters_json and modules_json:
+                        modules = json.loads(modules_json)
+                        semesters = json.loads(semesters_json)
+                        events[username].extend(self.untis_handler.get_events_from_modules(semesters=semesters, modules=modules))
 
-                        if semesters_json and modules_json:
-                            modules = json.loads(modules_json)
-                            semesters = json.loads(semesters_json)
-                            events[username].extend(self.untis_handler.get_events_from_modules(semesters=semesters, modules=modules))
+                    if additional_calendars_json:
+                        additional_calendars = json.loads(additional_calendars_json)
+                        events[username].extend(self.netloader.get_events_from_calendars(additional_calendars=additional_calendars))
 
-                        if additional_calendars_json:
-                            additional_calendars = json.loads(additional_calendars_json)
-                            events[username].extend(self.netloader.get_events_from_calendars(additional_calendars=additional_calendars))
-
-                    except json.JSONDecodeError as json_err:
-                        print(f"Error parsing JSON for user {username}: {json_err}")
-            return events
-
-        except sqlite3.Error as err:
-            print(err, traceback.format_exc())
+                except json.JSONDecodeError as json_err:
+                    print(f"Error parsing JSON for user {username}: {json_err}")
+        return events
 
     def get_semester_list(self, selected_semesters, selected_additionals):
         lst = []

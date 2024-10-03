@@ -136,8 +136,6 @@ form#moduleItemForm button {
   margin: 0 auto 2em;
 }
 
-
-
 .footer {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 10px 0;
@@ -291,7 +289,7 @@ form#moduleItemForm button {
 
 .link {
   text-decoration: solid;
-  color: palevioletred;
+  color: #db7093;
 }
 
 .link:hover {
