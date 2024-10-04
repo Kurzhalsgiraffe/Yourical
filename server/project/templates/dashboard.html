@@ -12,6 +12,16 @@
 {% endblock %}
 
 {% block content %}
+    <div id="confirmationDialog" class="modal">
+        <div class="modal-content">
+            <h2 id="confirmationDialogHeader"></h2>
+            <p id="confirmationDialogText"></p>
+            <div class="modal-buttons">
+                <button id="modalConfirm" class="button">Ja</button>
+                <button id="modalCancel" class="button">Nein</button>
+            </div>
+        </div>
+    </div>
     <div id="header-placeholder"></div>
     <div class="center-text">
         <h2>Semesterauswahl</h2>
@@ -21,15 +31,15 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="semesterSearchInput" placeholder="Filter..." class="searchInput">
+            <input type="text" id="semesterSearchInput" placeholder="Suchen..." class="searchInput">
         </div>
         <form id="semesterItemForm">
             <table id="semesterItemTable" class="itemTable">
                 <!-- Selection elements will be dynamically added here -->
             </table>
             <div class="button-container">
-                <button type="submit" id="submitSemesterButton">Submit</button>
-                <button type="button" id="resetSemesterButton">Reset</button>
+                <button type="submit" id="submitSemesterButton">Speichern</button>
+                <button type="button" id="resetSemesterButton">Löschen</button>
             </div>
         </form>
         <div class="alertContainer mt-2">
@@ -43,15 +53,15 @@
     <div>
         <div class="searchDiv">
             <img src="static/images/lupe.png" style="width:20px">
-            <input type="text" id="moduleSearchInput" placeholder="Filter..." class="searchInput">
+            <input type="text" id="moduleSearchInput" placeholder="Suchen..." class="searchInput">
         </div>
         <form id="moduleItemForm">
             <table id="moduleItemTable" class="itemTable">
                 <!-- Selection elements will be dynamically added here -->
             </table>
             <div class="button-container">
-                <button type="submit" id="submitModuleButton">Submit</button>
-                <button type="button" id="resetModuleButton">Reset</button>
+                <button type="submit" id="submitModuleButton">Speichern</button>
+                <button type="button" id="resetModuleButton">Löschen</button>
             </div>
         </form>
         <div class="alertContainer mt-2">

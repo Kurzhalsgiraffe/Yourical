@@ -44,7 +44,7 @@ $("#semesterItemForm").submit(function (event) {
     var formData = $("#semesterItemForm").serialize();
     $.post("/submit_semester_selection", formData, function (response) {
         $("#semesterItemFormAlert").removeClass("alert-danger").addClass("alert-success");
-        $("#semesterItemFormAlert").text("Semester selection saved");
+        $("#semesterItemFormAlert").text("Semesterauswahl gespeichert");
         fetchModuleListItems();
     }).fail(function(xhr, status, error) {
         var errorMessage = JSON.parse(xhr.responseText).message;
@@ -57,20 +57,13 @@ $("#semesterItemForm").submit(function (event) {
 });
 
 $("#resetSemesterButton").click(function () {
-    document.getElementById("semesterItemForm").reset();
-    $.post("/reset_semester_selection", function (response) {
-        $("#semesterItemFormAlert").removeClass("alert-danger").addClass("alert-success");
-        $("#semesterItemFormAlert").text("Semester selection reset");
-        fetchModuleListItems();
-        load_ical_events();
-    }).fail(function(xhr, status, error) {
-        var errorMessage = JSON.parse(xhr.responseText).message;
-        $("#semesterItemFormAlert").removeClass("alert-success").addClass("alert-danger");
-        $("#semesterItemFormAlert").text(errorMessage);
-        console.log("Error: " + errorMessage);
-    });
-    $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
+    $("#confirmationDialogHeader").text("Löschen bestätigen");
+    $("#confirmationDialogText").text("Möchtest du die Semesterauswahl wirklich löschen?");
+    $("#confirmationDialog").data("method", "resetSemester")
+    $("#confirmationDialog").show();
 });
+
+// -----------------------------------------------------------------------------------------------------------------------------
 
 function fetchModuleListItems() {
     $.get("/get_module_list", function (data) {
@@ -116,7 +109,7 @@ $("#moduleItemForm").submit(function (event) {
     var formData = $("#moduleItemForm").serialize();
     $.post("/submit_module_selection", formData, function (response) {
         $("#moduleItemFormAlert").removeClass("alert-danger").addClass("alert-success");
-        $("#moduleItemFormAlert").text("Modules saved, calendar created");
+        $("#moduleItemFormAlert").text("Modulauswahl gespeichert");
         load_ical_events();
     }).fail(function(xhr, status, error) {
         var errorMessage = JSON.parse(xhr.responseText).message;
@@ -129,19 +122,52 @@ $("#moduleItemForm").submit(function (event) {
 });
 
 $("#resetModuleButton").click(function () {
-    document.getElementById("moduleItemForm").reset();
-    $.post("/reset_module_selection", function (response) {
-        $("#moduleItemFormAlert").removeClass("alert-danger").addClass("alert-success");
-        $("#moduleItemFormAlert").text("Modules reset, calendar reset");
-        load_ical_events();
-    }).fail(function(xhr, status, error) {
-        var errorMessage = JSON.parse(xhr.responseText).message;
-        $("#moduleItemFormAlert").removeClass("alert-success").addClass("alert-danger");
-        $("#moduleItemFormAlert").text(errorMessage);
-        console.log("Error: " + errorMessage);
-    });
-    $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
+    $("#confirmationDialogHeader").text("Löschen bestätigen");
+    $("#confirmationDialogText").text("Möchtest du die Modulauswahl wirklich löschen?");
+    $("#confirmationDialog").data("method", "resetModule")
+    $("#confirmationDialog").show();
 });
+
+// -----------------------------------------------------------------------------------------------------------------------------
+
+$("#modalConfirm").click(function () {
+    var method = $("#confirmationDialog").data("method")
+    if (method == "resetSemester") {
+        document.getElementById("semesterItemForm").reset();
+        $.post("/reset_semester_selection", function (response) {
+            $("#semesterItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+            $("#semesterItemFormAlert").text("Semesterauswahl gelöscht");
+            fetchModuleListItems();
+            load_ical_events();
+        }).fail(function(xhr, status, error) {
+            var errorMessage = JSON.parse(xhr.responseText).message;
+            $("#semesterItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+            $("#semesterItemFormAlert").text(errorMessage);
+            console.log("Error: " + errorMessage);
+        });
+        $("#confirmationDialog").hide();
+        $("#semesterItemFormAlert").fadeIn().delay(2000).fadeOut();
+    } else if (method == "resetModule") {
+        document.getElementById("moduleItemForm").reset();
+        $.post("/reset_module_selection", function (response) {
+            $("#moduleItemFormAlert").removeClass("alert-danger").addClass("alert-success");
+            $("#moduleItemFormAlert").text("Moduleauswahl gelöscht");
+            load_ical_events();
+        }).fail(function(xhr, status, error) {
+            var errorMessage = JSON.parse(xhr.responseText).message;
+            $("#moduleItemFormAlert").removeClass("alert-success").addClass("alert-danger");
+            $("#moduleItemFormAlert").text(errorMessage);
+            console.log("Error: " + errorMessage);
+        });
+        $("#confirmationDialog").hide();
+        $("#moduleItemFormAlert").fadeIn().delay(2000).fadeOut();
+    }
+});
+
+$("#modalCancel").click(function () {
+    $("#confirmationDialog").hide();
+});
+
 
 $(document).ready(function () {
     fetchSemesterListItems();
