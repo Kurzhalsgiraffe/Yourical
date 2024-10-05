@@ -69,7 +69,10 @@ def index():
 def dashboard():
     domain = request.scheme + '://' + request.host
     last_calendar_update = manager.database.get_last_calendar_update(current_user.username)
-    last_calendar_update = datetime.strptime(last_calendar_update, '%Y-%m-%d %H:%M:%S').strftime('%d.%m.%Y um %H:%M:%S')
+    if last_calendar_update:
+        last_calendar_update = datetime.strptime(last_calendar_update, '%Y-%m-%d %H:%M:%S').strftime('%d.%m.%Y um %H:%M:%S')
+    else:
+        last_calendar_update = None
     return render_template('dashboard.html', current_user=current_user, domain=domain, last_calendar_update=last_calendar_update)
 
 @app.route('/faq', methods=['GET'])
