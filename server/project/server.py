@@ -38,6 +38,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
+    location = db.Column(db.TEXT)
     semesters = db.Column(db.TEXT)
     modules = db.Column(db.TEXT)
     additional_calendars = db.Column(db.TEXT)
@@ -141,7 +142,7 @@ def register():
             if form.validate_on_submit():
                 now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 hashed_password = bcrypt.generate_password_hash(form.password.data)
-                new_user = User(username=username, password=hashed_password, semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_update="", last_calendar_pull="")
+                new_user = User(username=username, password=hashed_password, location="Albstadt", semesters="", modules="", additional_calendars="", register_date="", last_login="", last_calendar_update="", last_calendar_pull="")
                 new_user.register_date = now
                 new_user.last_login = now
                 db.session.add(new_user)
