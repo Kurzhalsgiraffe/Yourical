@@ -2,7 +2,7 @@ services:
   web:
     build: ./server
     working_dir: /usr/src/app/project
-    command: uwsgi --socket 0.0.0.0:5000 --enable-threads --protocol=http -w wsgi:app --logto /dev/stdout
+    command: uwsgi --socket 0.0.0.0:5000 --enable-threads --protocol=http -w wsgi:app --logto /dev/stdout --workers 4 --threads 2
     volumes:
       - ./instance:/usr/src/app/project/instance
       - ./calendars:/usr/src/app/project/calendars
