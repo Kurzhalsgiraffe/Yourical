@@ -131,11 +131,11 @@ class Dao:
         except sqlite3.Error as err:
             sql_error_handler(err,traceback.format_exc())
             return None
-        
+
     def get_user_count(self):
         try:
             conn, cursor = self.get_db_connection()
-            sql = "SELECT COUNT(username) FROM user WHERE 1=1"
+            sql = "SELECT COUNT(username) FROM user"
             result = cursor.execute(sql).fetchone()
             conn.close()
             if result:
