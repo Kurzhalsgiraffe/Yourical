@@ -131,6 +131,42 @@ class Dao:
         except sqlite3.Error as err:
             sql_error_handler(err,traceback.format_exc())
             return None
+        
+    def get_user_count(self):
+        try:
+            conn, cursor = self.get_db_connection()
+            sql = "SELECT COUNT(username) FROM user WHERE 1=1"
+            result = cursor.execute(sql).fetchone()
+            conn.close()
+            if result:
+                return result[0]
+            else:
+                return "Fetch unsuccessfull"
+        except sqlite3.Error as err:
+            sql_error_handler(err,traceback.format_exc())
+            return None
+
+
+    def get_active_user_count(self):
+        try:
+            conn, cursor = self.get_db_connection()
+            today = datetime.now()
+            five_days_ago = today - timedelta(days=5)
+            five_days_ago_str = five_days_ago.strftime('%Y-%m-%d %H:%M:%S')
+
+            sql = "SELECT COUNT(username) FROM user WHERE last_calendar_pull IS NOT NULL AND last_calendar_pull >= ?"
+
+            result = cursor.execute(sql, (five_days_ago_str,)).fetchone()
+            conn.close()
+
+            if result:
+                return result[0]
+            else:
+                return "Fetch unsuccessful"
+        except sqlite3.Error as err:
+            sql_error_handler(err, traceback.format_exc())
+            return None
+
 
 class UntisHandler:
     def __init__(self, save_file:str, config:Config) -> None:

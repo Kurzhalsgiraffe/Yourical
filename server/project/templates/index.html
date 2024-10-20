@@ -8,8 +8,9 @@
     <div class="home-container">
         <div class="home-text">Yourical</div>
 
-        <img src="{{ url_for('static', filename='images/index_image.png') }}" width="25%" style="min-width: 250px;">
-
+        <img src="{{ url_for('static', filename='images/index_image.png') }}" width="15%" style="min-width: 250px;">
+        <h4>{{ user_count }} Nutzer haben sich bereits registriert!</h4>
+        <h4>{{ active_user_count }} Nutzen ihr persönliches URL-Abo!</h4>
         <div class="links-container">
             {% if current_user.is_authenticated %}
                 <div class="my-3">
@@ -27,8 +28,12 @@
             {% endif %}
 
             <div class="my-3">
+                <h2>Hier bekommst du alle SIA-Events</h2>
+                <h5>
+                    <a href="{{ domain }}/sia" class="link-box" onclick="copyLink(event)" >{{ domain }}/Sia</a>
+                </h5>
                 <h2>Wie es funktioniert:</h2>
-                <h5 class="mt-2">Hier erfährst du, wie du den Stundenplan RICHTIG <a href="{{ url_for('faq') }}" class="link">zu deinem Kalender hinzufügen</a> kannst</h5>
+                <h5 class="mt-2">Hier erfährst du, wie du einen diesen Link RICHTIG <a href="{{ url_for('faq') }}" class="link">zu deinem Kalender hinzufügen</a> kannst</h5>
             </div>
         </div>
     </div>
