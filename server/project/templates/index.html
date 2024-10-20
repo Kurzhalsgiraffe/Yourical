@@ -8,8 +8,8 @@
     <div class="home-container">
         <div class="home-text">Yourical</div>
 
-        <img src="{{ url_for('static', filename='images/index_image.png') }}" width="15%" style="min-width: 200px;">
-        <h5>{{ user_count }} Nutzer haben sich bereits registriert! TEST!!!!!</h5>
+        <img src="{{ url_for('static', filename='images/index_image.png') }}" width="20%" style="min-width: 200px;">
+        <h5>{{ user_count }} Nutzer haben sich bereits registriert!</h5>
         <h5>{{ active_user_count }} nutzen aktiv ihr persönliches URL-Abo!</h5>
         <div class="links-container">
             {% if current_user.is_authenticated %}
