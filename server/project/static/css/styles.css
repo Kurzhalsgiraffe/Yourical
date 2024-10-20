@@ -172,6 +172,7 @@ button:hover {
   height: 50px; /* Ensure a larger clickable area */
   background-color: rgba(0, 0, 0, 0.7); /* Improve visibility */
   border-radius: 5px;
+  z-index: 1000;
 }
 
 .burger .line {
@@ -180,18 +181,22 @@ button:hover {
   background-color: #fff;
   margin: 6px auto;
   transition: all 0.3s ease-in-out;
+  z-index: 1001;
 }
 
 .burger.open .line:nth-child(1) {
   transform: translateY(10px) rotate(45deg);
+  z-index: 1001;
 }
 
 .burger.open .line:nth-child(2) {
   opacity: 0;
+  z-index: 1001;
 }
 
 .burger.open .line:nth-child(3) {
   transform: translateY(-10px) rotate(-45deg);
+  z-index: 1000;
 }
 
 .navbar1 {

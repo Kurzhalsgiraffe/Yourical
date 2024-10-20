@@ -10,7 +10,7 @@
 
         <img src="{{ url_for('static', filename='images/index_image.png') }}" width="15%" style="min-width: 250px;">
         <h4>{{ user_count }} Nutzer haben sich bereits registriert!</h4>
-        <h4>{{ active_user_count }} Nutzen ihr persönliches URL-Abo!</h4>
+        <h4>{{ active_user_count }} nutzen aktiv ihr persönliches URL-Abo!</h4>
         <div class="links-container">
             {% if current_user.is_authenticated %}
                 <div class="my-3">
@@ -28,7 +28,7 @@
             {% endif %}
 
             <div class="my-3">
-                <h2>Hier bekommst du alle SIA-Events</h2>
+                <h2>Abbonniere aktuelle SIA-Events</h2>
                 <h5>
                     <a href="{{ domain }}/sia" class="link-box" onclick="copyLink(event)" >{{ domain }}/Sia</a>
                 </h5>

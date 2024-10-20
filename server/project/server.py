@@ -29,7 +29,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-dao = ical_manager.Dao(dbfile="instance/database.db")
+dao = ical_manager.Dao(dbfile=manager.config.get_config("database_path"))
 
 @login_manager.user_loader
 def load_user(user_id):
