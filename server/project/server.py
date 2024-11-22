@@ -10,11 +10,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError, EqualTo
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 manager = ical_manager.IcalManager(config_file="config/settings.json")
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = manager.config.get_config("database_uri")
 app.config['SECRET_KEY'] = manager.config.get_config("encryption_secret_key")
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 CORS(app)
 
 scheduler = APScheduler()
@@ -285,4 +287,4 @@ def update_calendars():
 ## ----- MAIN ----- ##
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", debug=True)
+    app.run(host="127.0.0.1")
