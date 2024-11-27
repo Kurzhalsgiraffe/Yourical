@@ -117,9 +117,9 @@ def login():
                     db.session.commit()
                     return redirect(url_for('dashboard'))
                 else:
-                    flash('- Incorrect password. Please try again.', 'error')
+                    flash('- Incorrect password. Due to security you can only try 5 times a minute.', 'error')
             else:
-                flash('- User does not exist. Please register.', 'error')
+                flash('- User does not exist. You may remebered wrong or the user got deleted due to inactivity. Due to security you can only try 5 times a minute.', 'error')
     return render_template('login.html', form=form)
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -136,11 +136,11 @@ def register():
         existing_user_username = User.query.filter_by(username=username).first()
         if existing_user_username or not username.isalnum() or username in manager.config.get_config("banned_usernames") or form.password.data != form.confirm_password.data:
             if not username.isalnum():
-                flash('- Only alphanumerical Characters are allowed. Please choose a different name.', 'error')
+                flash('- Only alphanumerical Characters are allowed. Please choose a different username.', 'error')
             if existing_user_username:
-                flash('- That username already exists. Please choose a different name.', 'error')
+                flash('- That username already exists. Please choose a different username.', 'error')
             if username in manager.config.get_config("banned_usernames"):
-                flash('- That username is not allowed. Please choose a different name.', 'error')
+                flash('- That username is not allowed. Please choose a different username.', 'error')
             if form.password.data != form.confirm_password.data:
                 flash('- Passwords do not match.', 'error')
         else:
