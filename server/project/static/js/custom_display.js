@@ -8,6 +8,7 @@ function data_req(url, callback) {
     var req = new XMLHttpRequest();
     req.addEventListener('load', callback);
     req.open('GET', url);
+    req.setRequestHeader('X-Website-Request', 'true');
     req.send();
 }
 
